@@ -46,7 +46,7 @@ We have added reg tests for the new features added for FogDog. simply cd into th
 
 Currently this will test:
 * creation of a read count file
-* creation of teh biom format
+* creation of the biom format
 
 ## Citation
 
