@@ -1,4 +1,4 @@
-# The location of the expat directory
+# To run the tests type ". run_regtests.sh"
 
 
 #this tests the read counts and the biome format
