@@ -4,8 +4,8 @@
 ### Step 1:
 MetaPathways for FOGDOG requires: 
 * Python 2.7 or greater (https://www.python.org/)
-* Scipy (python) (pip install scipy)
-* python biom-format package (pip install nump; pip install biom-format)
+* Scipy (python) (pip install scipy; https://github.com/scipy/scipy)
+* python biom-format package (http://biom-format.org/; pip install nump; pip install biom-format)
 * [Pathway Tools](http://bioinformatics.ai.sri.com/ptools/) developed by SRI International
 
 ### Step 2:
