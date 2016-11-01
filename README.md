@@ -38,7 +38,7 @@ Please see the [MetaPathways v2.5 wiki](https://github.com/hallamlab/metapathway
 
 A template [MetaPathways_DBs.zip (**Updated: October 2014**)](https://www.dropbox.com/s/ye3kpve041e0r39/MetaPathways_DBs.zip?dl=0) contains starter protein and taxonomic databases
 
-### Reg Tests
+## Reg Tests
 
 We have added reg tests for the new features added for FogDog. simply cd into the MetaPathways directory that was donwloaded and (after running the make commands) and run:
 
