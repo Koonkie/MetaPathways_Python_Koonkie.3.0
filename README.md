@@ -1,19 +1,19 @@
 # MetaPathways for FOGDOG
 
 ## Installation
-# Step 1:
+### Step 1:
 MetaPathways for FOGDOG requires: 
 * Python 2.7 or greater (https://www.python.org/)
 * Scipy (python) (pip install scipy)
 * python biom-format package (pip install nump; pip install biom-format)
 * [Pathway Tools](http://bioinformatics.ai.sri.com/ptools/) developed by SRI International
 
-# Step 2:
+### Step 2:
 Once you have the above tools simply clone or download the MetaPathways repository this can be done using the github GUI or by using git clone (https://github.com/Koonkie/MetaPathways_Python_Koonkie.3.0.git). 
 
 MetaPathways uses several third party softwares all of which are distributed with the MetaPathways code. Licenses for each third party software are within the tar ball (source code). Note that these third party softwares have all been modified for compatability with MetaPathways as is permissable under the included licenses. 
 
-# Step 3:
+### Step 3:
 Finally:
 
 After the repositpry in cloned, navigate into MetaPathways_Python_Koonkie.3.0/executables/source In this folder you will see a Makefile. The following are options:
