@@ -2,7 +2,6 @@
 *.swp
 .idea*
 *.DS_Store
-regtests*
 redhat
 rpkm_c
 *.o
