@@ -1096,7 +1096,7 @@ class ContextCreator:
           '''output'''
           rpkm_output = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orf_read_counts.txt"
           biom_output = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orf_read_counts.biom"
-          stats_file = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orf_rpkm_stats.txt"
+          stats_file = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orf_read_counts_stats.txt"
 
           samFiles = getSamFiles(rpkm_input, s.sample_name) 
           readFiles = getReadFiles(rpkm_input, s.sample_name)

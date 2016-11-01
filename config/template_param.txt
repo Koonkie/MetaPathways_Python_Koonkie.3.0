@@ -52,7 +52,7 @@ metapaths_steps:SCAN_tRNA skip
 metapaths_steps:ANNOTATE_ORFS redo
 metapaths_steps:CREATE_ANNOT_REPORTS skip
 metapaths_steps:BUILD_PGDB skip
-metapaths_steps:COMPUTE_RPKM skip
+metapaths_steps:COMPUTE_RPKM redo
 
 # grid settings
 # template for adding grid

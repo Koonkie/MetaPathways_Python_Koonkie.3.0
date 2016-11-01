@@ -480,6 +480,7 @@ void writeOut_ORFwise_RPKM_values(const string orf_rpkm_file,  map<string, float
     ofstream output_file;
 
     output_file.open(orf_rpkm_file.c_str());
+    output_file << "# ORF_ID\tCOUNT" << endl;
     for(map<string, float>::iterator it= orfnames.begin(); it != orfnames.end(); it++)  {
          output_file << it->first << "\t" << it->second << endl;
     }
