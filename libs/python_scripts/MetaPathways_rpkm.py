@@ -277,6 +277,11 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
        status = 1
        pass
 
+    if status!=0:
+       eprintf("ERROR\tRPKM calculation was unsuccessful\n")
+       return 255
+       #exit_process("ERROR\tFailed to run RPKM" )
+
     try:
        status  = runBIOMCommand(options.output, options.biomoutput) 
     except:
@@ -284,7 +289,7 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
        pass
 
     if status!=0:
-       eprintf("ERROR\tRPKM calculation was unsuccessful\n")
+       eprintf("ERROR\tBIOM calculation was unsuccessful\n")
        return 255
        #exit_process("ERROR\tFailed to run RPKM" )
 
