@@ -1,0 +1,38 @@
+@INFO	BEFORE	AFTER
+#INFO	Number of sequences :	211	196
+@INFO	Number of sequences shorter than minimum length of sequences	211	0
+@INFO	Average length of sequences:	309.739336493	329.852040816
+@INFO	Minimum length of sequences:	21	61
+@INFO	Maximum length of sequences:	1495	1495
+@INFO	LOW	HIGH	FREQUENCY	CUMULATIVE_FREQUENCY
+   0	50	6	211
+   50	100	33	205
+   100	150	21	172
+   150	200	20	151
+   200	250	25	131
+   250	300	17	106
+   300	350	16	89
+   350	400	14	73
+   400	450	16	59
+   450	500	8	43
+   500	550	3	35
+   550	600	7	32
+   600	650	10	25
+   650	700	5	15
+   700	750	2	10
+   750	800	1	8
+   800	850	2	7
+   850	900	1	5
+   900	950	0	4
+   950	1000	0	4
+   1000	1050	0	4
+   1050	1100	0	4
+   1100	1150	0	4
+   1150	1200	0	4
+   1200	1250	0	4
+   1250	1300	1	4
+   1300	1350	1	3
+   1350	1400	1	2
+   1400	1450	0	1
+   1450	1500	1	1
+   1500	1550	0	0

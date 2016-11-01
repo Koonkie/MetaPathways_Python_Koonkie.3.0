@@ -1,0 +1,3 @@
+#STEP	ORF_PREDICTION
+#STEP	COMPUTE_RPKM
+ERROR	Missing input no sam or fastq files to process [OPTIONAL]

@@ -1,0 +1,20 @@
+1000	Number of sequences in input file BEFORE QC (nucleotide)	4
+1001	-min length	2000
+1002	-avg length	2450
+1003	-max length	3000
+1004	-total base pairs (bp)	9800
+1005	Number of sequences AFTER QC (nucleotide)	4
+1006	-min length	2000
+1007	-avg length	2450
+1008	-max length	3000
+1009	-total base pairs (bp)	9800
+2000	Number of translated ORFs BEFORE QC (amino)	11
+2001	-min length	60
+2002	-avg length	260
+2003	-max length	632
+2004	-total base pairs (bp)	2863
+2005	Number of tranlated ORFs AFTER QC (amino)	11
+2006	-min length	60
+2007	-avg length	260
+2008	-max length	632
+2009	-total base pairs (bp)	2863

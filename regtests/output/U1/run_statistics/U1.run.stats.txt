@@ -1,0 +1,10 @@
+2000	Number of translated ORFs BEFORE QC (amino)	2617
+2001	-min length	4
+2002	-avg length	288
+2003	-max length	1771
+2004	-total base pairs (bp)	754978
+2005	Number of tranlated ORFs AFTER QC (amino)	2483
+2006	-min length	60
+2007	-avg length	303
+2008	-max length	1771
+2009	-total base pairs (bp)	754441
