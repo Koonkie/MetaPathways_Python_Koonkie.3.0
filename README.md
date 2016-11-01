@@ -18,29 +18,45 @@ Finally:
 
 After the repositpry in cloned, navigate into MetaPathways_Python_Koonkie.3.0/executables/source In this folder you will see a Makefile. The following are options:
 
-* make untar_folder
+Please run:
 * make build_folders
+
+Then run one of (depending on your operating system):
 * make install_macosx
 * make install_redhat
 * make install_ubuntu
 
-it is also possible to:
+it is also possible to (but these are optional):
 * make clean_folders
 * make tar_folders
 * make remove_macosx
 * make remove_redhat
 * make remove_ubuntu
+* make untar_folder
 
 Please see the [MetaPathways v2.5 wiki](https://github.com/hallamlab/metapathways2/wiki) for more details on running the software.
 
 A template [MetaPathways_DBs.zip (**Updated: October 2014**)](https://www.dropbox.com/s/ye3kpve041e0r39/MetaPathways_DBs.zip?dl=0) contains starter protein and taxonomic databases
 
+### Reg Tests
+
+We have added reg tests for the new features added for FogDog. simply cd into the MetaPathways directory that was donwloaded and (after running the make commands) and run:
+
+. run_regtests.sh 
+
+Currently this will test:
+* creation of a read count file
+* creation of teh biom format
+
 ## Citation
 
 This version of MetaPathways is a modified version of Metapathway v2.0. It is modified as is permissable according to the license. The citation and abstract can be found below.
 
+Konwar, Kishori M., et al. "MetaPathways: a modular pipeline for constructing pathway/genome databases from environmental sequence information." BMC bioinformatics 14.1 (2013): 1
+
 Niels W. Hanson, Kishori M. Konwar, Shang-Ju Wu, Steven J. Hallam. *MetaPathways v2.0: A master-worker model for environmental Pathway/Genome Database construction on grids and clouds.* Proceedings of the 2014 IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology (CIBCB 2014), Honolulu, HI, USA, May 21-24, 2014. [doi:10.1109/CIBCB.2014.6845516](http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=6845516)
 
+Konwar, Kishori M., et al. "MetaPathways v2. 5: quantitative functional, taxonomic and usability improvements." Bioinformatics 31.20 (2015): 3345-3347.
 
 The development of high-throughput sequencing technologies over the past decade has generated a tidal wave of environmental sequence information from a variety of natural and human engineered ecosystems. The resulting flood of infor- mation into public databases and archived sequencing projects has exponentially expanded computational resource requirements rendering most local homology-based search methods inefficient. We recently introduced MetaPathways v1.0, a modular annotation and analysis pipeline for constructing environmental Pathway/Genome Databases (ePGDBs) from environmental sequence information capable of using the Sun Grid engine for external resource partitioning. However, a command-line interface and facile task management introduced user activation barriers with concomitant decrease in fault tolerance.
 
