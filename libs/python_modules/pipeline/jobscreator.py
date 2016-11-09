@@ -294,6 +294,8 @@ class ContextCreator:
           context.status = self.params.get('metapaths_steps','ORF_PREDICTION')
           translation_table = self.params.get('orf_prediction', 'translation_table')
 
+          mode = self.params.get('orf_prediction', 'mode')
+
           pyScript = self.configs.METAPATHWAYS_PATH + self.configs.ORF_PREDICTION
 
           executable = self.configs.METAPATHWAYS_PATH + PATHDELIM +\
@@ -303,7 +305,7 @@ class ContextCreator:
                     pyScript,
                     "--prod_exec", executable,
                     "--prod_m",
-                    "--prod_p", 'meta',
+                    "--prod_p", mode,
                     "--prod_f", "gff",
                     "--prod_g", translation_table,
                     "--prod_input", context.inputs['input_file'],
