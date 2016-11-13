@@ -6,3 +6,7 @@ rpkm_c
 *.o
 lastdb+
 lastal+
+*bwa
+*prodigal
+*rpkm
+*trnascan-1.4
