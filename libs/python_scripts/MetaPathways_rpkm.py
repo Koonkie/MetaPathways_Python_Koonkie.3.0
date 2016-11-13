@@ -299,7 +299,7 @@ def runRPKMCommand(runcommand = None):
 
 
 def runBIOMCommand(infile, outfile, biomExec="biom"):
-    commands =  [biomExec,  " convert", "-i", infile, "-o", outfile,  "--table-type=\"Table\"", "--to-json"]
+    commands =  [biomExec,  " convert", "-i", infile, "-o", outfile,  "--table-type=\"Table\"", "--to-hdf5"]
     result = getstatusoutput(' '.join(commands))
     return result[0]
 
