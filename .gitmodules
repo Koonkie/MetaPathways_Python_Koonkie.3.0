@@ -1,0 +1,3 @@
+[submodule "executables/source/trnascan"]
+	path = executables/source/trnascan
+	url = https://github.com/Koonkie/Koonkie_transcan-1.4
