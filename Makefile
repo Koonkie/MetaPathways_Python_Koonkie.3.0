@@ -9,9 +9,10 @@ SUBDIRS= prodigal.v2_00 rpkm trnascan  LAST-Plus bwa-0.7.7
 
 NCBI_BLAST=ncbi-blast-2.5.0+-x64-linux.tar.gz
 NCBI_BLAST_VER=ncbi-blast-2.5.0+
+BINARY_FOLDER=executables/linux
 
 
-extract_blast: $(NCBI_BLAST)  
+extract_blast: $(NCBI_BLAST) $(BINARY_FOLDER) 
 	@echo -n "Extracting the binaries for BLAST...." 
 	tar --extract --file=$(NCBI_BLAST)  $(NCBI_BLAST_VER)/bin
 	mv $(NCBI_BLAST_VER)/bin/blastx  executables/linux/
@@ -27,6 +28,9 @@ $(NCBI_BLAST):
 	wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/$(NCBI_BLAST)
 	@echo "done" 
 
+$(BINARY_FOLDER): 
+	@if [ ! -d $(BINARY_FOLDER) ]; then mkdir $(BINARY_FOLDER); fi
+   
 
 build_folders:
 	$(MAKE) $(CFLAGS) trnascan 
