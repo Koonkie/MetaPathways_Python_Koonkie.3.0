@@ -2,7 +2,6 @@
 *.swp
 .idea*
 *.DS_Store
-redhat
 rpkm_c
 *.o
 lastdb+
