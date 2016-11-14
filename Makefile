@@ -4,15 +4,43 @@ LEX=lex
 LEXFLAGS=-lfl
 CFLAGS=-C
 
-TARS= prodigal.v2_00.tar rpkm.tar trnascan.tar LAST-Plus.tar bwa-0.7.7.tar
-SUBDIRS= prodigal.v2_00 rpkm trnascan  LAST-Plus bwa-0.7.7
-
 NCBI_BLAST=ncbi-blast-2.5.0+-x64-linux.tar.gz
 NCBI_BLAST_VER=ncbi-blast-2.5.0+
 BINARY_FOLDER=executables/linux
 
+BLASTP=$(BINARY_FOLDER)/blastp
+RPKM=$(BINARY_FOLDER)/rpkm
+BWA=$(BINARY_FOLDER)/bwa
+TRNASCAN=$(BINARY_FOLDER)/trnascan-1.4
+FAST=$(BINARY_FOLDER)/fastal
+PRODIGAL=$(BINARY_FOLDER)/prodigal
 
-extract_blast: $(NCBI_BLAST) $(BINARY_FOLDER) 
+
+
+all: $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(BLASTP) 
+
+$(TRNASCAN):  
+	$(MAKE) $(CFLAGS) executables/source/trnascan 
+	mv executables/source/trnascan/trnascan-1.4 $(BINARY_FOLDER)/
+
+$(RPKM):  
+	$(MAKE) $(CFLAGS) executables/source/rpkm 
+	mv executables/source/rpkm/rpkm $(BINARY_FOLDER)/
+
+$(BWA):  
+	$(MAKE) $(CFLAGS) executables/source/bwa 
+	mv executables/source/bwa/bwa $(BINARY_FOLDER)/
+
+$(PRODIGAL):  
+	$(MAKE) $(CFLAGS) executables/source/prodigal 
+	mv executables/source/prodigal/prodigal $(BINARY_FOLDER)/
+
+$(FAST):  
+	$(MAKE) $(CFLAGS) executables/source/FAST 
+	mv executables/source/FAST/fastal $(BINARY_FOLDER)/
+	mv executables/source/FAST/fastdb $(BINARY_FOLDER)/
+
+$(BLASTP): $(NCBI_BLAST) 
 	@echo -n "Extracting the binaries for BLAST...." 
 	tar --extract --file=$(NCBI_BLAST)  $(NCBI_BLAST_VER)/bin
 	mv $(NCBI_BLAST_VER)/bin/blastx  executables/linux/
@@ -30,7 +58,8 @@ $(NCBI_BLAST):
 
 $(BINARY_FOLDER): 
 	@if [ ! -d $(BINARY_FOLDER) ]; then mkdir $(BINARY_FOLDER); fi
-   
+
+
 
 build_folders:
 	$(MAKE) $(CFLAGS) trnascan 
