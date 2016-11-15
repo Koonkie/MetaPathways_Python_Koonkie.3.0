@@ -15,27 +15,29 @@ TRNASCAN=$(BINARY_FOLDER)/trnascan-1.4
 FAST=$(BINARY_FOLDER)/fastal
 PRODIGAL=$(BINARY_FOLDER)/prodigal
 
-
-
 all: $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(BLASTP) 
 
-$(TRNASCAN):  
+gitmodules:
+	git submodule init
+	git submodule update
+
+$(TRNASCAN): gitmodules
 	$(MAKE) $(CFLAGS) executables/source/trnascan 
 	mv executables/source/trnascan/trnascan-1.4 $(BINARY_FOLDER)/
 
-$(RPKM):  
+$(RPKM): gitmodules
 	$(MAKE) $(CFLAGS) executables/source/rpkm 
 	mv executables/source/rpkm/rpkm $(BINARY_FOLDER)/
 
-$(BWA):  
+$(BWA): gitmodules
 	$(MAKE) $(CFLAGS) executables/source/bwa 
 	mv executables/source/bwa/bwa $(BINARY_FOLDER)/
 
-$(PRODIGAL):  
+$(PRODIGAL): gitmodules
 	$(MAKE) $(CFLAGS) executables/source/prodigal 
 	mv executables/source/prodigal/prodigal $(BINARY_FOLDER)/
 
-$(FAST):  
+$(FAST): gitmodules
 	$(MAKE) $(CFLAGS) executables/source/FAST 
 	mv executables/source/FAST/fastal $(BINARY_FOLDER)/
 	mv executables/source/FAST/fastdb $(BINARY_FOLDER)/
