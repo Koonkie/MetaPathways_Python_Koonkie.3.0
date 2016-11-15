@@ -1,5 +1,5 @@
 
-Stats for file :  regtests/output/B1/bwa/B1_0.sam
+Stats for file :  /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/bwa/B1_0.sam
 
 Number of lines in SAM file      : 7
 Number of unmapped lines         : 2
@@ -12,7 +12,7 @@ Number of secondary hits         : 0
 Number distinct reads mapped     : 5
 Number distinct reads unmapped   : 2
 
-Stats for file :  regtests/output/B1/bwa/B1_1.sam
+Stats for file :  /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/bwa/B1_1.sam
 
 Number of lines in SAM file      : 7
 Number of unmapped lines         : 2

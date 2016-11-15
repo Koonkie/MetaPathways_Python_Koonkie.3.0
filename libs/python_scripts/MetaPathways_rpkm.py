@@ -146,16 +146,15 @@ def runUsingBWA(bwaExec, sample_name, indexFile,  _readFiles, bwaFolder) :
        bwaOutputTmp = bwaOutput + ".tmp"
        cmd ="command not prepared"
        if len(readFiles) == 2:
-          cmd = "%s mem -t %d -o %s %s %s %s"  %(bwaExec, num_threads, bwaOutputTmp, indexFile,  readFiles[0], readFiles[1])
+          cmd = "%s mem -t %d %s %s %s > %s"  %(bwaExec, num_threads, indexFile,  readFiles[0], readFiles[1], bwaOutputTmp )
 
        if len(readFiles) == 1:
           res0 = re.search(r'_[1-2].fastq',readFiles[0])
           res1 = re.search(r'_[1-2].b\d+.fastq',readFiles[0])
           if res0 or res1:
-             cmd = "%s mem -t %d -o %s  %s %s "%(bwaExec, num_threads, bwaOutputTmp, indexFile,  readFiles[0])
+             cmd = "%s mem -t %d  %s %s > %s "%(bwaExec, num_threads, indexFile,  readFiles[0], bwaOutputTmp)
           else:
-             cmd = "%s mem -t %d -p  -o %s  %s %s "%(bwaExec, num_threads, bwaOutputTmp, indexFile,  readFiles[0])
-#       print cmd
+             cmd = "%s mem -t %d -p  %s %s > %s "%(bwaExec, num_threads,  indexFile,  readFiles[0], bwaOutputTmp)
        result = getstatusoutput(cmd)
 
        if result[0]==0:
