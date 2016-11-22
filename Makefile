@@ -15,10 +15,12 @@ TRNASCAN=$(BINARY_FOLDER)/trnascan-1.4
 FAST=$(BINARY_FOLDER)/fastal
 PRODIGAL=$(BINARY_FOLDER)/prodigal
 MICROBE_CENSUS=microbe_census
+METAPATHWAYS_DB=MetaPathways_DBs
+METAPATHWAYS_DB_TAG=Metapathways_DBs_2016-04.tar.xz
 
 
 
-all: $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(BLASTP) $(MICROBE_CENSUS)
+all: $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(BLASTP) $(MICROBE_CENSUS) $(METAPATHWAYS_DB)
 
 $(TRNASCAN):  
 	$(MAKE) $(CFLAGS) executables/source/trnascan 
@@ -64,7 +66,14 @@ $(MICROBE_CENSUS):
 	sudo python setup.py install
 	@echo "Testing installation, may take a few minutes...." 
 	cd tests; python test_microbe_census.py
- 
+
+$(METAPATHWAYS_DB_TAR):
+	@echo  "Fetching the databases...." 
+	aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz .
+
+$(METAPATHWAYS_DB): $(METAPATHWAYS_DB_TAR)
+	@echo  "Unzipping the database...." 
+	tar -xvf Metapathways_DBs_2016-04.tar.xz 
   
 
 $(BINARY_FOLDER): 
