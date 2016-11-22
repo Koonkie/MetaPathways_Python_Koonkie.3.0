@@ -293,6 +293,7 @@ class ContextCreator:
           context.outputs = { 'output_gff' : output_gff }
           context.status = self.params.get('metapaths_steps','ORF_PREDICTION')
           translation_table = self.params.get('orf_prediction', 'translation_table')
+          strand = self.params.get('orf_prediction', 'strand')
 
           pyScript = self.configs.METAPATHWAYS_PATH + self.configs.ORF_PREDICTION
 
@@ -307,7 +308,7 @@ class ContextCreator:
                     "--prod_f", "gff",
                     "--prod_g", translation_table,
                     "--prod_input", context.inputs['input_file'],
-                    "--prod_output", context.outputs['output_gff']
+                    "--prod_output", context.outputs['output_gff'], "--strand",  strand
                 ]
 
           context.commands = [ ' '.join(cmd)]
@@ -1096,6 +1097,7 @@ class ContextCreator:
           '''output'''
           rpkm_output = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orf_read_counts.txt"
           biom_output = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orf_read_counts.biom"
+          microbecensus_output = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".microbe_census.txt"
           stats_file = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orf_read_counts_stats.txt"
 
           samFiles = getSamFiles(rpkm_input, s.sample_name) 
@@ -1125,16 +1127,17 @@ class ContextCreator:
           context.outputs = {
                              'rpkm_output': rpkm_output,
                              'biom_output': biom_output,
+                             'microbecensusoutput': microbecensus_output,
                              'stats_file': stats_file
                             }
 
           pyScript = self.configs.METAPATHWAYS_PATH + self.configs.RPKM_CALCULATION
 
-          cmd = "%s -c %s  --rpkmExec %s --rpkmdir %s -O %s -o %s -b %s --sample_name  %s --stats %s --bwaFolder %s --bwaExec %s"\
+          cmd = "%s -c %s  --rpkmExec %s --rpkmdir %s -O %s -o %s -b %s --sample_name  %s --stats %s --bwaFolder %s --bwaExec %s -m %s"\
                 % (pyScript, context.inputs['output_fas'], context.inputs['rpkmExec'],\
                    context.inputs['rpkm_input'], context.inputs['output_gff'],\
                  context.outputs['rpkm_output'], context.outputs['biom_output'],  s.sample_name, context.outputs['stats_file'],\
-                 context.inputs['bwaFolder'], context.inputs['bwaExec'])
+                 context.inputs['bwaFolder'], context.inputs['bwaExec'], context.outputs['microbecensusoutput'])
                 
           context.status = self.params.get('metapaths_steps', 'COMPUTE_RPKM') 
 

@@ -28,3 +28,23 @@
 6001	Protein Annotations from kegg-uniprot-2016-10-20	5
 6002	Protein Annotations from metacyc-2016-10-31	0
 6003	Total Protein Annotations	5
+2000	Number of translated ORFs BEFORE QC (amino)	12
+2001	-min length	96
+2002	-avg length	235
+2003	-max length	416
+2004	-total base pairs (bp)	2827
+2005	Number of tranlated ORFs AFTER QC (amino)	12
+2006	-min length	96
+2007	-avg length	235
+2008	-max length	416
+2009	-total base pairs (bp)	2827
+2000	Number of translated ORFs BEFORE QC (amino)	12
+2001	-min length	96
+2002	-avg length	235
+2003	-max length	416
+2004	-total base pairs (bp)	2827
+2005	Number of tranlated ORFs AFTER QC (amino)	12
+2006	-min length	96
+2007	-avg length	235
+2008	-max length	416
+2009	-total base pairs (bp)	2827

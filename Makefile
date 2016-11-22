@@ -14,10 +14,11 @@ BWA=$(BINARY_FOLDER)/bwa
 TRNASCAN=$(BINARY_FOLDER)/trnascan-1.4
 FAST=$(BINARY_FOLDER)/fastal
 PRODIGAL=$(BINARY_FOLDER)/prodigal
+MICROBE_CENSUS=microbe_census
 
 
 
-all: $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(BLASTP) 
+all: $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(BLASTP) $(MICROBE_CENSUS)
 
 $(TRNASCAN):  
 	$(MAKE) $(CFLAGS) executables/source/trnascan 
@@ -55,6 +56,16 @@ $(NCBI_BLAST):
 	@echo -n "Downloading BLAST from NCBI website...." 
 	wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/$(NCBI_BLAST)
 	@echo "done" 
+
+.ONESHELL:
+$(MICROBE_CENSUS):
+	@echo  "Installing MicrobeCensus...." 
+	cd executables/source/MicrobeCensus/
+	sudo python setup.py install
+	@echo "Testing installation, may take a few minutes...." 
+	cd tests; python test_microbe_census.py
+ 
+  
 
 $(BINARY_FOLDER): 
 	@if [ ! -d $(BINARY_FOLDER) ]; then mkdir $(BINARY_FOLDER); fi

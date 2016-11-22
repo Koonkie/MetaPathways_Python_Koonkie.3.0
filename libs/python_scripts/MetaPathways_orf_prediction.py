@@ -4,7 +4,7 @@
 
 try:
    import  sys, re, csv, traceback
-   from os import path, _exit, rename
+   from os import path, _exit, rename, remove
    import logging.handlers
 
    from optparse import OptionParser, OptionGroup
@@ -82,6 +82,9 @@ def createParser():
     prodigal_group.add_option('--prod_exec', dest='prod_exec', default=None,
                            help='prodigal executable')
 
+    prodigal_group.add_option('--strand', dest='strand', default='both',  choices=['pos', 'neg', 'both'],
+                           help='strand where the ORFs are used choices are  \'pos\', \'neg\' and \'both\' [default: \'both\'')
+
     parser.add_option_group(prodigal_group)
 
 
@@ -95,6 +98,23 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
         _execute_prodigal(options)
        
 
+
+def  filter_strand(temp_output, output, c):
+     commentPatt = re.compile(r'^#')
+     with open(temp_output, 'r') as infile, open(output, 'w') as outfile:
+       for line in infile:
+         if commentPatt.search(line):
+            continue
+
+         fields = [ x.strip() for x in line.split('\t') ]
+         if len(fields) < 7:
+            continue
+
+         if fields[6]==c:
+           fprintf(outfile,"%s\n",line.strip())
+     
+     remove(temp_output)
+         
 
 def  _execute_prodigal(options):
     args= [ ]
@@ -121,9 +141,18 @@ def  _execute_prodigal(options):
        args += [ "-o", options.prod_output + ".tmp" ]
        #args += [ "-o", options.prod_output  ]
 
-
     result = getstatusoutput(' '.join(args) )
-    rename(options.prod_output + ".tmp" , options.prod_output)
+
+    print "strand" , options.strand
+    if options.strand=='both':
+       rename(options.prod_output + ".tmp" , options.prod_output)
+
+    if options.strand=='pos':
+        filter_strand(options.prod_output + ".tmp" , options.prod_output, "+")
+
+    if options.strand=='neg':
+        filter_strand(options.prod_output + ".tmp" , options.prod_output, "-")
+
     return result[0]
 
 

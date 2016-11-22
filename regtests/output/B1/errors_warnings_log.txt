@@ -10,3 +10,53 @@
 #STEP	ANNOTATE_ORFS
 #STEP	CREATE_ANNOT_REPORTS
 #STEP	RPKM_CALCULATION
+#STEP	RPKM_CALCULATION
+#STEP	RPKM_CALCULATION
+#STEP	RPKM_CALCULATION
+#STEP	RPKM_CALCULATION
+#STEP	RPKM_CALCULATION
+#STEP	RPKM_CALCULATION
+#STEP	ORF_PREDICTION
+#STEP	ORF_TO_AMINO
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+#STEP	FILTER_AMINOS
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction//B1.faa
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction//B1.faa
+#STEP	ORF_PREDICTION
+#STEP	ORF_PREDICTION
+#STEP	ORF_TO_AMINO
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+#STEP	FILTER_AMINOS
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction//B1.faa
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction//B1.faa
+#STEP	ORF_PREDICTION
+#STEP	ORF_TO_AMINO
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+#STEP	FILTER_AMINOS
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction//B1.faa
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction//B1.faa
+#STEP	ORF_PREDICTION
+#STEP	ORF_PREDICTION
+#STEP	ORF_PREDICTION
+#STEP	ORF_TO_AMINO
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+#STEP	ORF_PREDICTION
+#STEP	ORF_TO_AMINO
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+#STEP	ORF_PREDICTION
+#STEP	ORF_TO_AMINO
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+#STEP	ORF_PREDICTION
+#STEP	ORF_TO_AMINO
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+ERROR	Missing input /home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0/regtests/output/B1/orf_prediction/B1.gff
+#STEP	ORF_PREDICTION
+#STEP	ORF_PREDICTION
+#STEP	ORF_PREDICTION
+#STEP	ORF_PREDICTION
