@@ -227,6 +227,7 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
               print attrib
               sys.exit(0)
 
+            
            if attrib['product']  in first_hits:
                if attrib['ec'] :
                  if attrib['ec'] in first_hits[attrib['product']]:
@@ -304,26 +305,39 @@ def write_to_pf_file(output_dir_name, shortid, attrib):
     try: 
        prod_attributes = create_product_attributes(attrib['product'])
 
-       if len(prod_attributes)>=5:
-         for i in range(0, len(prod_attributes)):
-            if i==0:
-              fprintf(pfFile, "FUNCTION\t%s\n", prod_attributes[i])
+       for function in prod_attributes['FUNCTION']:
+          fprintf(pfFile, "FUNCTION\t%s\n", function)
+          #printf("FUNCTION\t%s\n", function)
+           
+       for dblink in prod_attributes['DBLINK']:
+          fprintf(pfFile, "DBLINK\t%s:%s\n", dblink[0], dblink[1])
+          #printf("DBLINK\t%s:%s\n", dblink[0], dblink[1])
 
-            if i==1:
-              fprintf(pfFile, "DBLINK\tSP:%s\n", prod_attributes[i])
-            #  printf("DBLINK\tSP:%s\n", prod_attributes[0])
-   
-            if i == 2:
-              fprintf(pfFile, "DBLINK\tMetaCyc:%s\n", prod_attributes[i])
-            #  printf("DBLINK\tMetaCyc:%s\n", prod_attributes[1])
-   
-            if i >= 4:
-              if not prod_attributes[i] in ec_nos:
-                 fprintf(pfFile, "EC\t%s\n", prod_attributes[i])
-                 ec_nos[prod_attributes[i]] = True
-       else:
-         fprintf(pfFile, "FUNCTION\t%s\n", attrib['product'])
-            #  printf("EC\t%s\n", prod_attributes[3])
+       for ec in prod_attributes['EC']:
+          fprintf(pfFile, "EC\t%s\n", ec)
+          #printf("EC\t%s\n", ec)
+
+
+#       if len(prod_attributes)>=5:
+#         for i in range(0, len(prod_attributes)):
+#            if i==0:
+#              fprintf(pfFile, "FUNCTION\t%s\n", prod_attributes[i])
+#
+#            if i==1:
+#              fprintf(pfFile, "DBLINK\tSP:%s\n", prod_attributes[i])
+#            #  printf("DBLINK\tSP:%s\n", prod_attributes[0])
+#   
+#            if i == 2:
+#              fprintf(pfFile, "DBLINK\tMetaCyc:%s\n", prod_attributes[i])
+#            #  printf("DBLINK\tMetaCyc:%s\n", prod_attributes[1])
+#   
+#            if i >= 4:
+#              if not prod_attributes[i] in ec_nos:
+#                 fprintf(pfFile, "EC\t%s\n", prod_attributes[i])
+#                 ec_nos[prod_attributes[i]] = True
+#       else:
+#         fprintf(pfFile, "FUNCTION\t%s\n", attrib['product'])
+#            #  printf("EC\t%s\n", prod_attributes[3])
     except:
        fprintf(pfFile, "FUNCTION\t%s \n", 'hypothetical protein')
 
@@ -333,38 +347,109 @@ def write_to_pf_file(output_dir_name, shortid, attrib):
     if attrib['feature']=='tRNA':
        fprintf(pfFile, "PRODUCT-TYPE\tTRNA\n")
 
-    try:
-      if  len(attrib['ec']) > 0:
-        if not attrib['ec'] in ec_nos:
-          fprintf(pfFile, "EC\t%s\n", attrib['ec'])
-    except: 
-         pass
     fprintf(pfFile, "//\n")
     pfFile.close()
 
 
 def  create_product_attributes(product) :
-     _result = re.search(r'#\sUNIPROT', product)
+     COG_PATT = re.compile(r'(COG\d\d\d\d)')
+     KEGG_PATT = re.compile(r'(K\d\d\d\d\d)')
+     EC_PATTS = [ 
+                  re.compile(r'EC[:\s](\d+[.]\d+[.]\d+[.]-)'),\
+                  re.compile(r'EC[:\s](\d+[.]\d+[.]\d+[.]\d+)'),\
+                  re.compile(r'EC[:\s](\d+[.]\d+[.]-[.]-)'),\
+                  re.compile(r'EC[:\s](\d+[.]-[.]-[.]-)'),\
+                  re.compile(r'(\d+[.]\d+[.]\d+[.]-)'),\
+                  re.compile(r'(\d+[.]\d+[.]\d+[.]\d+)'),\
+                  re.compile(r'(\d+[.]\d+[.]-[.]-)'),\
+                  re.compile(r'(\d+[.]-[.]-[.]-)')
+                ]
+
+     #METACYC_PATT = re.compile(r'#\sUNIPROT\s#\s([A-Z0-9]+)\s#\s([.*])\s#')
+     METACYC_PATT = re.compile(r'#\sUNIPROT\s#\s([A-Z0-9]+)\s#\s(\S*)\s#')
+     ORGANISM_PATT = re.compile(r'#\sOrganism:\s(.*)$')
+     FUNCTION_PATT = re.compile(r'#\sFunction:\s([^#]*)')
+
+     STRAY_PATT = re.compile(r'[()#%]')
+
      products = []
-
-     if _result:
-       fields = product.split("#")
-       products = [ fields[0]]
-       _f = False
-       for _field in fields:
-          field = _field.strip()
-          if _f==True:
-            products.append(field)
-             
-          if field=='UNIPROT':
-            _f = True
-     else:
-        products = [ product]
-
-     return products
-    
+     _products = {}
+     _products['DBLINK'] =[]
+     _products['FUNCTION'] =[]
+     _products['ORGANISM'] =[]
+     _products['EC'] =[]
+     _product = product 
 
 
+     seen_ec={}
+     res = KEGG_PATT.search(_product) 
+     if res:
+        for kegg in res.groups( ):
+          _products["DBLINK"].append([ "KO", kegg ])
+        _product = re.sub(KEGG_PATT,'%',_product)
+        
+
+     res = COG_PATT.search(_product) 
+     if res:
+        for cog in res.groups( ):
+          _products["DBLINK"].append([ "COG", cog ])
+        _product = re.sub(COG_PATT,'%',_product)
+        
+     for EC_PATT in EC_PATTS:
+        res = EC_PATT.search(_product) 
+        if res:
+          for ec in res.groups( ):
+             if not  ec in seen_ec:
+                _products["EC"].append( ec)
+                seen_ec[ec]= True 
+
+        _product = re.sub(EC_PATT,'%',_product)
+        
+
+     res = METACYC_PATT.search(_product) 
+     if res:
+         i = 0
+         for ec in res.groups():
+             if i==0:
+               _products["DBLINK"].append([ 'SP',  ec])
+             if i==1:
+               _products["DBLINK"].append([ 'METACYC',  ec])
+             i+=1
+
+         _product = re.sub(METACYC_PATT,'%',_product)
+        
+
+     res = ORGANISM_PATT.search(_product) 
+     if res:
+         for ec in res.groups():
+             _products["ORGANISM"].append( ec.strip())
+         _product = re.sub(ORGANISM_PATT,'%',_product)
+        
+     res = FUNCTION_PATT.search(_product) 
+     if res:
+         for func in res.groups():
+             _func  =re.sub(STRAY_PATT,'',func)
+             _products["FUNCTION"].append(clean_up_function_text(_func.strip()))
+         _product = re.sub(FUNCTION_PATT,'%',_product)
+      
+     _product = re.sub(STRAY_PATT,'', _product)
+     if _product.strip():
+          _products["FUNCTION"].append(clean_up_function_text(_product.strip()))
+
+
+     return _products
+
+
+def clean_up_function_text(_product):
+     _fields = [ x.strip() for x in  _product.split(' ')]
+     prev_field=''
+     fields = []
+     for _field in _fields:
+        if _field!=prev_field and _field:
+            fields.append(_field)
+            prev_field = _field
+
+     return ' '.join(fields)  
 
 
 def write_input_sequence_file(output_dir_name, shortid, contig_sequence):
