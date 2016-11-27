@@ -605,3 +605,12 @@ def extractSampleName(sampleName, type = None):
      return sample_name 
 
 
+def createDummyFile(absfilename):
+    try:
+        f = open(absfilename, 'w')
+        f.close()
+    except:
+        return False
+
+    return True
+    #

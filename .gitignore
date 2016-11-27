@@ -20,5 +20,11 @@ regtests/output/N3
 regtests/output/N4
 regtests/output/T1
 regtests/output/U1
+regtests/output/beaver
+regtests/input/beaver.fasta
+regtests/input/reads/beaver*
 Metapathways_DBs_2016-04.tar.xz
 MetaPathways_DBs
+executables/source/MicrobeCensus
+executables/source/prodigal
+executables/source/LAST-Plus

@@ -435,7 +435,7 @@ def main(argv):
 
     try:
          # load the sample information 
-         print "RUNNING MetaPathways version 2.5.1"
+         print "RUNNING MetaPathways version FogDog 3.0"
          if len(input_output_list): 
               for input_file in sorted_input_output_list:
                 sample_output_dir = input_output_list[input_file]

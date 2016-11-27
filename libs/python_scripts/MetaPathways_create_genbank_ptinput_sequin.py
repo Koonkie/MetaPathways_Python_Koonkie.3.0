@@ -18,7 +18,7 @@ try:
     import re
     from glob import glob
     from libs.python_modules.utils.utils import *
-    from libs.python_modules.utils.metapathways_utils import ShortenORFId,ShortentRNAId
+    from libs.python_modules.utils.metapathways_utils import ShortenORFId,ShortentRNAId, ShortenrRNAId, ContigID
     from libs.python_modules.utils.sysutil import pathDelim, genbankDate, getstatusoutput
     from libs.python_modules.parsers.parse  import parse_parameter_file
 except:
@@ -87,8 +87,6 @@ def insert_orf_into_dict(line, contig_dict):
          attributes['end'] =  int(fields[4])
      except:
          print line
-         print fields
-         print attributes
          sys.exit(0)
 
      try:
@@ -103,7 +101,7 @@ def insert_orf_into_dict(line, contig_dict):
      if not fields[0] in contig_dict :
        contig_dict[fields[0]] = []
 
- #    print attributes
+     #print attributes
      contig_dict[fields[0]].append(attributes)
 
 
@@ -143,6 +141,13 @@ Fields must be tab-separated. Also, all but the final field in each feature line
 #def get_date():
 
 
+def get_sample_name(gff_file_name):
+     sample_name= re.sub('.annotated.gff', '', gff_file_name)
+     sample_name= re.sub('.annot.gff', '', gff_file_name) # Niels: somewhere we changed the file name?
+     sample_name= re.sub(r'.*[/\\]', '', sample_name)
+     return sample_name
+
+
 def process_gff_file(gff_file_name, output_filenames, nucleotide_seq_dict, protein_seq_dict, input_filenames, compact_output=True):
      #print output_filenames
      try:
@@ -150,9 +155,7 @@ def process_gff_file(gff_file_name, output_filenames, nucleotide_seq_dict, prote
      except IOError:
         print "Cannot read file " + gff_file_name + " !"
 
-     sample_name= re.sub('.annotated.gff', '', gff_file_name)
-     sample_name= re.sub('.annot.gff', '', gff_file_name) # Niels: somewhere we changed the file name?
-     sample_name= re.sub(r'.*[/\\]', '', sample_name)
+     sample_name=get_sample_name(gff_file_name)
 
      gff_lines = gfffile.readlines()
      gff_beg_pattern = re.compile("^#")
@@ -166,10 +169,6 @@ def process_gff_file(gff_file_name, output_filenames, nucleotide_seq_dict, prote
           continue
         """  Do not add tRNA """
         insert_orf_into_dict(line, contig_dict)
-        #if count%10000 ==0:
-        #   print count 
-        #count = count + 1
-
 
      if "gbk" in output_filenames:
        write_gbk_file(output_filenames['gbk'], contig_dict, sample_name, nucleotide_seq_dict, protein_seq_dict)
@@ -198,6 +197,10 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
 
      # iterate over every contig sequence
      first_hits = {}
+     if compact_output:
+        prefix = 'O_'
+     else:
+        prefix = sample_name + '_'
 
      for key in contig_dict:
         first = True
@@ -210,11 +213,15 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
         for attrib in contig_dict[key]:     
 
            id  =  attrib['id']
+
            shortid=""
+
            if attrib['feature']=='CDS':
-              shortid  =  'O_'+ ShortenORFId(attrib['id'])
+              shortid  =  prefix + ShortenORFId(attrib['id'])
+           if attrib['feature']=='rRNA':
+              shortid  =  prefix + ShortenrRNAId(attrib['id'])
            if attrib['feature']=='tRNA':
-              shortid  =  'O_'+ ShortentRNAId(attrib['id'])
+              shortid  =  prefix + ShortentRNAId(attrib['id'])
 
            try:
               protein_seq = protein_seq_dict[id]
@@ -247,7 +254,7 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
                 first_hits[attrib['product']]['n'] =shortid
                 first_hits[attrib['product']]['ec'] =attrib['ec']
 
-           # create the pf file
+       
            write_to_pf_file(output_dir_name, shortid, attrib)
 
            # append to the gen elements file
@@ -258,6 +265,7 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
         #write the sequence now only once per contig
         try:
            contig_seq =  nucleotide_seq_dict[key]
+           
         except:
            printf("ERROR: Contig %s missing file in \"preprocessed\" folder for sample\n", key)
            continue
@@ -290,8 +298,7 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
      rename(output_dir_name + "/.tmp.genetic-elements.dat", output_dir_name + "/genetic-elements.dat")
 
 def write_to_pf_file(output_dir_name, shortid, attrib):
-    if "O_"==shortid:
-       print "found"
+
     pfFile = open(output_dir_name + "/" + shortid + ".pf", 'w')
     try: 
        fprintf(pfFile, "ID\t%s\n", shortid)
@@ -347,6 +354,9 @@ def write_to_pf_file(output_dir_name, shortid, attrib):
     if attrib['feature']=='tRNA':
        fprintf(pfFile, "PRODUCT-TYPE\tTRNA\n")
 
+    if attrib['feature']=='rRNA':
+       fprintf(pfFile, "PRODUCT-TYPE\trRNA\n")
+
     fprintf(pfFile, "//\n")
     pfFile.close()
 
@@ -366,7 +376,12 @@ def  create_product_attributes(product) :
                 ]
 
      #METACYC_PATT = re.compile(r'#\sUNIPROT\s#\s([A-Z0-9]+)\s#\s([.*])\s#')
-     METACYC_PATT = re.compile(r'#\sUNIPROT\s#\s([A-Z0-9]+)\s#\s(\S*)\s#')
+# UNIPROT # Q9I1M2 # MetaCyc # 1.2.4.4-RXN
+     METACYC_PATTS = [   # order is important 
+                         re.compile(r'#\sUNIPROT\s#\s([A-Z0-9]+)\s#\sMetaCyc\s#(\s)#'),
+                         re.compile(r'#\sUNIPROT\s#\s([A-Z0-9]+)\s#\sMetaCyc\s#\s(\S*)\s#'),
+                         re.compile(r'#\sUNIPROT\s#\s([A-Z0-9]+)\s#\s(\S*)\s#')
+                    ]
      ORGANISM_PATT = re.compile(r'#\sOrganism:\s(.*)$')
      FUNCTION_PATT = re.compile(r'#\sFunction:\s([^#]*)')
 
@@ -406,17 +421,20 @@ def  create_product_attributes(product) :
         _product = re.sub(EC_PATT,'%',_product)
         
 
-     res = METACYC_PATT.search(_product) 
-     if res:
-         i = 0
-         for ec in res.groups():
+
+     for METACYC_PATT in METACYC_PATTS:
+         res = METACYC_PATT.search(_product) 
+         if res:
+           i=0
+           for ec in res.groups():
              if i==0:
                _products["DBLINK"].append([ 'SP',  ec])
              if i==1:
-               _products["DBLINK"].append([ 'METACYC',  ec])
+               if ec.strip():
+                 _products["DBLINK"].append([ 'MetaCyc',  ec])
              i+=1
-
-         _product = re.sub(METACYC_PATT,'%',_product)
+           _product = re.sub(METACYC_PATT,'%',_product)
+           break
         
 
      res = ORGANISM_PATT.search(_product) 
@@ -461,7 +479,7 @@ def write_input_sequence_file(output_dir_name, shortid, contig_sequence):
 def append_genetic_elements_file(genetic_elementsfile, output_dir_name, shortid):
     fprintf(genetic_elementsfile,"ID\t%s\n", shortid)
     fprintf(genetic_elementsfile,"NAME\t%s\n", shortid)
-    fprintf(genetic_elementsfile,"TYPE\t:READ/CONTIG\n")
+    fprintf(genetic_elementsfile,"TYPE\t:CONTIG\n")
     fprintf(genetic_elementsfile,"ANNOT-FILE\t%s.pf\n", shortid)
     fprintf(genetic_elementsfile,"SEQ-FILE\t%s.fasta\n", shortid)
     fprintf(genetic_elementsfile,"//\n")
@@ -650,7 +668,7 @@ def wrap(prefix, start, end, string):
     
     
 
-def process_sequence_file(sequence_file_name,  seq_dictionary):
+def process_sequence_file(sequence_file_name,  seq_dictionary, shortorfid=False):
      try:
         sequencefile = open(sequence_file_name, 'r')
      except IOError:
@@ -662,15 +680,19 @@ def process_sequence_file(sequence_file_name,  seq_dictionary):
      name=""
 
 #     count = 0
-     seq_beg_pattern = re.compile(">")
+     seq_beg_pattern = re.compile(">(\S+)")
      for line in sequence_lines:
         line = line.strip() 
-        if seq_beg_pattern.search(line):
+        res = seq_beg_pattern.search(line)
+        if res:
           if len(name) > 0:
              sequence=''.join(fragments)
              seq_dictionary[name]=sequence
              fragments = []
-          name=get_sequence_number(line)
+          if shortorfid:
+             name=get_sequence_number(line)
+          else:
+             name=res.group(1)
         else:
           fragments.append(line)
 
@@ -814,6 +836,9 @@ def main(argv, errorlogger = None, runstatslogger = None):
 
     process_gff_file(options.gff_file, output_files, nucleotide_seq_dict, protein_seq_dict, input_files, compact_output=options.compact_output) 
     #print params['bitscore']
+ 
+    sample_name = get_sample_name(options.gff_file)
+    createDummyFile(options.ptinput_file + PATHDELIM + sample_name + ".dummy.txt")
 
 def MetaPathways_create_genbank_ptinput_sequin(argv, errorlogger = None, runstatslogger = None):
     createParser()

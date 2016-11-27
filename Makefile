@@ -12,7 +12,7 @@ BLASTP=$(BINARY_FOLDER)/blastp
 RPKM=$(BINARY_FOLDER)/rpkm
 BWA=$(BINARY_FOLDER)/bwa
 TRNASCAN=$(BINARY_FOLDER)/trnascan-1.4
-FAST=$(BINARY_FOLDER)/fastal
+LASTPlus=$(BINARY_FOLDER)/lastal+
 PRODIGAL=$(BINARY_FOLDER)/prodigal
 MICROBE_CENSUS=microbe_census
 METAPATHWAYS_DB=MetaPathways_DBs
@@ -20,7 +20,7 @@ METAPATHWAYS_DB_TAG=Metapathways_DBs_2016-04.tar.xz
 
 
 
-all: $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(BLASTP) $(MICROBE_CENSUS) $(METAPATHWAYS_DB)
+all: $(BINARY_FOLDER) $(PRODIGAL)  $(LASTPlus)  $(BWA) $(TRNASCAN)  $(RPKM) $(BLASTP) $(MICROBE_CENSUS) $(METAPATHWAYS_DB)
 
 $(TRNASCAN):  
 	$(MAKE) $(CFLAGS) executables/source/trnascan 
@@ -38,10 +38,10 @@ $(PRODIGAL):
 	$(MAKE) $(CFLAGS) executables/source/prodigal 
 	mv executables/source/prodigal/prodigal $(BINARY_FOLDER)/
 
-$(FAST):  
-	$(MAKE) $(CFLAGS) executables/source/FAST 
-	mv executables/source/FAST/fastal $(BINARY_FOLDER)/
-	mv executables/source/FAST/fastdb $(BINARY_FOLDER)/
+$(LASTPlus):  
+	$(MAKE) $(CFLAGS) executables/source/LAST-Plus
+	mv executables/source/LAST-Plus/lastal+ $(BINARY_FOLDER)/
+	mv executables/source/LAST-Plus/lastdb+ $(BINARY_FOLDER)/
 
 $(BLASTP): $(NCBI_BLAST) 
 	@echo -n "Extracting the binaries for BLAST...." 
