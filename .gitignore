@@ -7,3 +7,10 @@ rpkm_c
 *.o
 lastdb+
 lastal+
+executables/source/
+executables/ubuntu/trnascan-1.4
+executables/ubuntu/lastal+
+executables/ubuntu/lastdb+
+executables/ubuntu/bwa
+executables/ubuntu/prodigal
+executables/ubuntu/rpkm
