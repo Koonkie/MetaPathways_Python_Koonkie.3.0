@@ -7,10 +7,7 @@ rpkm_c
 *.o
 lastdb+
 lastal+
-last-merge-batches+
-last-split+
 bwa
-libbwa.a
 prodigal
 trnascan-1.4
 rpkm
