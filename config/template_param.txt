@@ -17,6 +17,7 @@ orf_prediction:strand  both
 orf_prediction:algorithm prodigal
 orf_prediction:min_length 60
 orf_prediction:translation_table 11
+orf_prediction:mode meta
 
 # ORF annotation parameters
 annotation:algorithm BLAST
