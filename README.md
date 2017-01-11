@@ -29,6 +29,7 @@ Then run one of (depending on your operating system):
 it is also possible to (but these are optional):
 * make clean_folders
 * make tar_folders
+Depending on the OS you are using:
 * make remove_macosx
 * make remove_redhat
 * make remove_ubuntu
