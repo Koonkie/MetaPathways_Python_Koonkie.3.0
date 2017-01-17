@@ -91,7 +91,8 @@ class Configuration():
             'STATS_rRNA':True,
             'SCAN_tRNA': False ,
             'MLTREEMAP_CALCULATION': False,
-            'COMPUTE_RPKM': True
+            'COMPUTE_RPKM': True,
+            'CREATE_BIOM': True
          }
 
         self.missingErrors = { 

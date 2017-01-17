@@ -435,7 +435,7 @@ def main(argv):
 
     try:
          # load the sample information 
-         print "RUNNING MetaPathways version 2.5.1"
+         print "RUNNING MetaPathways version FogDog 3.0"
          if len(input_output_list): 
               for input_file in sorted_input_output_list:
                 sample_output_dir = input_output_list[input_file]
@@ -481,7 +481,6 @@ def main(argv):
    
         
          # blast the files
-     
          blasting_system =    get_parameter(params,  'metapaths_steps', 'BLAST_REFDB', default='yes')
          if blasting_system =='grid':
             #  blasting the files files on the grids
@@ -506,11 +505,16 @@ def main(argv):
     eprintf("INFO : FINISHED PROCESSING THE SAMPLES \n")
     eprintf("             THE END                   \n")
     eprintf("            ***********                \n")
-    halt_process(opts.delay)
+    #halt_process(opts.delay)
 
 # the main function of metapaths
 if __name__ == "__main__":
     createParser()
-    main(sys.argv[1:])    
+    try:
+      main(sys.argv[1:])    
+    except:
+      sys.exit(1) 
+
+    halt_process(1)
     
 

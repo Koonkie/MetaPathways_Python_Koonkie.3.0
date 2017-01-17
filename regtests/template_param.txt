@@ -1,0 +1,66 @@
+##V.1   do not remove this line
+# MetaPathways v1.0 
+# Kishori M. Konwar, Niels W. Hanson
+# Parameter File
+
+INPUT:format fasta
+# e.g. fasta gbk-annotated gbk-unannotated gff-annotated gff-unannotated
+
+# Quality Control  parameters 
+quality_control:min_length 180
+quality_control:delete_replicates yes
+
+# ORF prediction parameters 
+# Metatranscripts   pos, neg, both
+
+orf_prediction:strand  both
+
+orf_prediction:algorithm prodigal
+orf_prediction:min_length 60
+orf_prediction:translation_table 11
+
+# ORF annotation parameters
+annotation:algorithm BLAST
+# e.g. blast or last
+
+orf_prediction:algorithm prodigal
+orf_prediction:min_length 60
+orf_prediction:translation_table 11
+
+# ORF annotation parameters
+annotation:algorithm BLAST
+# e.g. blast or last
+
+# e.g. annotation:dbs    cog,kegg,refseq,metacyc
+#annotation:dbs COG-14-2016-10-20,kegg-uniprot-2016-10-20, metacyc-2016-10-31
+annotation:dbs AR-polypeptides_2016-03-16.fasta, COG_2013-12-27  merops_pepunit_v9-12_nohyphen.fasta  tcdb_2016-03-16.fasta uniprot_sprot_2016_02.fasta,CAZY_2014-09-04_from-MP.fasta  metacyc-v5-2011-10-21 uniprot-seq-ids-reduced-100.fasta, VFDB_setA_pro.fas   
+
+annotation:min_bsr 0.4
+annotation:max_evalue 0.000001
+annotation:min_score 20
+annotation:min_length 45
+annotation:max_hits 5
+
+# rRNA annotation parameters LSURef_115_tax_silva
+rRNA:refdbs LSURef_115_tax_silva_2013-12-12
+
+rRNA:max_evalue 0.000001
+rRNA:min_identity 20
+rRNA:min_bitscore 50
+
+# pathway tools parameters
+ptools_settings:taxonomic_pruning no
+
+
+# pipeline execution flags
+# e.g. yes, skip, yes
+metapaths_steps:PREPROCESS_INPUT yes
+metapaths_steps:ORF_PREDICTION yes
+metapaths_steps:FILTER_AMINOS yes
+metapaths_steps:FUNC_SEARCH yes
+metapaths_steps:PARSE_FUNC_SEARCH yes
+metapaths_steps:SCAN_rRNA yes
+metapaths_steps:SCAN_tRNA yes
+metapaths_steps:ANNOTATE_ORFS yes
+metapaths_steps:BUILD_PGDB skip
+metapaths_steps:COMPUTE_RPKM yes

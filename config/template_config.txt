@@ -6,7 +6,7 @@
 # Paths for the Python, Perl and Pathway Tools
 PYTHON_EXECUTABLE '/usr/bin/python'
 PGDB_FOLDER '/home/sgeadmin/ptools-local/pgdbs/user'
-METAPATHWAYS_PATH '/home/sgeadmin/MetaPathways_Python_Koonkie.3.0'
+METAPATHWAYS_PATH '/home/sgeadmin/Koonkie/MetaPathways_Python_Koonkie.3.0'
 
 # Replace with your current
 PATHOLOGIC_EXECUTABLE '/home/sgeadmin/pathway-tools/pathway-tools'
@@ -48,6 +48,7 @@ SCAN_rRNA 'libs/python_scripts/MetaPathways_rRNA_stats_calculator.py'
 SCAN_tRNA 'libs/python_scripts/MetaPathways_tRNA_scan.py'
 MLTREEMAP_CALCULATION 'libs/python_scripts/MetaPathways_mltreemap.py'
 RPKM_CALCULATION 'libs/python_scripts/MetaPathways_rpkm.py'
+CREATE_BIOM 'libs/python_scripts/MetaPathways_create_biom.py'
 
 
 NUM_CPUS '13'

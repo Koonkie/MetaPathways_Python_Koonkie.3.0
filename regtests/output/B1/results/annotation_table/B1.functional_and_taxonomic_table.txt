@@ -1,0 +1,6 @@
+ORF_ID	ORF_length	start	end	Contig_Name	Contig_length	strand	ec	taxonomy	     product
+1_1	1250	546	1796	1	6266	-		root	Modification methylase OS Methanococcus aeolicus (strain ATCC BAA-1280 / DSM 17508 OCM 812 Nankai-3) GN PE 3 SV 1 K00571
+1_2	773	2014	2787	1	6266	-		root	Putative restriction endonuclease OS Herpetosiphon aurantiacus (strain ATCC 23779 / DSM 785) GN PE 4 SV 1 K07454
+0_0	1208	1	1209	0	4297	+		root	Succinate dehydrogenase or fumarate reductase, flavoprotein subunit OS Chlorobium limicola (strain DSM 245 / NBRC 103803 6330) GN PE 4 SV 1 K00239
+0_1	773	1218	1991	0	4297	+		root	4Fe-4S ferredoxin iron-sulfur binding domain protein OS Chlorobium limicola (strain DSM 245 / NBRC 103803 6330) GN PE 4 SV 1 K00240
+0_3	581	2704	3285	0	4297	+		root	RNA polymerase sigma-70 factor, ECF subfamily OS Chlorobium tepidum (strain ATCC 49652 / DSM 12025 NBRC 103806 TLS) GN CT0502 PE 3 SV 1 K03088

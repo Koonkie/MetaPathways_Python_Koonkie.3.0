@@ -53,7 +53,8 @@ class JobCreator():
             for stage in stageList: 
                if stage in self.params['metapaths_steps'] or\
                   stage in [ 'ORF_TO_AMINO', 'GBK_TO_FNA_FAA_GFF', 'GBK_TO_FNA_FAA_GFF_ANNOT',\
-                           'COMPUTE_REFSCORES', 'PREPROCESS_AMINOS', 'PATHOLOGIC_INPUT',  'CREATE_ANNOT_REPORTS']:
+                           'COMPUTE_REFSCORES', 'PREPROCESS_AMINOS', 'PATHOLOGIC_INPUT',\
+                           'CREATE_ANNOT_REPORTS', 'CREATE_BIOM']:
                              # 'MLTREEMAP_CALCULATION',
                   #if self.params['INPUT']['format'] =='gbk-unannotated':
                   #  if stage=='PREPROCESS_INPUT':
@@ -293,6 +294,9 @@ class ContextCreator:
           context.outputs = { 'output_gff' : output_gff }
           context.status = self.params.get('metapaths_steps','ORF_PREDICTION')
           translation_table = self.params.get('orf_prediction', 'translation_table')
+          strand = self.params.get('orf_prediction', 'strand')
+
+          mode = self.params.get('orf_prediction', 'mode')
 
           pyScript = self.configs.METAPATHWAYS_PATH + self.configs.ORF_PREDICTION
 
@@ -303,11 +307,11 @@ class ContextCreator:
                     pyScript,
                     "--prod_exec", executable,
                     "--prod_m",
-                    "--prod_p", 'meta',
+                    "--prod_p", mode,
                     "--prod_f", "gff",
                     "--prod_g", translation_table,
                     "--prod_input", context.inputs['input_file'],
-                    "--prod_output", context.outputs['output_gff']
+                    "--prod_output", context.outputs['output_gff'], "--strand",  strand
                 ]
 
           context.commands = [ ' '.join(cmd)]
@@ -681,7 +685,7 @@ class ContextCreator:
           refdbs= [x.strip() for x in dbstring.split(",")  if len(x)!=0 ]
 
           rRNAdbstring =   self.params.get('rRNA', 'refdbs', default=None)
-          rRNAdbs= [x.strip() for x in dbstring.split(",")  if len(x)!=0 ]
+          rRNAdbs= [x.strip() for x in rRNAdbstring.split(",")  if len(x)!=0 ]
 
 
 
@@ -709,6 +713,7 @@ class ContextCreator:
           for rRNArefdb in rRNAdbs:
                rRNA_stat_results= s.output_results_rRNA_dir + s.sample_name +\
                                   '.' + rRNArefdb + '.rRNA.stats.txt' 
+               print rRNA_stat_results
                if  hasResults(rRNA_stat_results)  :
                    context.inputs['rRNA_stat_results']  = rRNA_stat_results                   
                    options += " --rRNA_16S " +  context.inputs['rRNA_stat_results'] 
@@ -802,6 +807,7 @@ class ContextCreator:
           '''outputs'''
 
           context = Context()
+          context1 = Context()
           context.name = 'PATHOLOGIC_INPUT'
         
           context.inputs = { 
@@ -817,10 +823,16 @@ class ContextCreator:
           #  'output_fasta_pf_dir_fasta':s.output_fasta_pf_dir + PATHDELIM +  '0.fasta',
           context.outputs = {
             'output_fasta_pf_dir':s.output_fasta_pf_dir,
-            'output_fasta_pf_dir_pf':s.output_fasta_pf_dir + PATHDELIM +  '0.pf',
             'output_fasta_pf_dir_genetic':s.output_fasta_pf_dir + PATHDELIM + 'genetic-elements.dat',
-            'output_fasta_pf_dir_organism':s.output_fasta_pf_dir + PATHDELIM +  'organism-params.dat'
+            'output_fasta_pf_dir_organism':s.output_fasta_pf_dir + PATHDELIM +  'organism-params.dat',
+            'dummy_ouptut_file':s.output_fasta_pf_dir + PATHDELIM +  s.sample_name + '.dummy.txt'
           }
+
+          context1.outputs = {
+            'output_fasta_pf_dir_pf':s.output_fasta_pf_dir + PATHDELIM +  '0.pf',
+          }
+
+
 
           pyScript = self.configs.METAPATHWAYS_PATH + self.configs.GENBANK_FILE
           ''' remove the fasta files '''
@@ -1084,7 +1096,7 @@ class ContextCreator:
           '''input'''
           rpkm_input = s.rpkm_input_dir 
           bwaFolder = s.bwa_folder 
-          output_gff = s.orf_prediction_dir + PATHDELIM +  s.sample_name + ".unannot.gff"
+          output_gff = s.genbank_dir + s.sample_name + ".annot.gff"
           output_fas = s.preprocessed_dir + PATHDELIM + s.sample_name + ".fasta"
           rpkmExec = self.configs.METAPATHWAYS_PATH + PATHDELIM + self.configs.EXECUTABLES_DIR +\
                      PATHDELIM + self.configs.RPKM_EXECUTABLE
@@ -1094,8 +1106,8 @@ class ContextCreator:
 
 
           '''output'''
-          rpkm_output = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orf_read_counts.txt"
-          biom_output = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orf_read_counts.biom"
+          rpkm_output = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orfwise"
+          microbecensus_output = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".microbe_census.txt"
           stats_file = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orf_read_counts_stats.txt"
 
           samFiles = getSamFiles(rpkm_input, s.sample_name) 
@@ -1111,6 +1123,7 @@ class ContextCreator:
             inputFile = readFiles[0][0] 
 
           context = Context()
+          context1 = Context()
           context.name = 'COMPUTE_RPKM'
           context.inputs = {
                              'rpkm_input':rpkm_input,
@@ -1122,19 +1135,21 @@ class ContextCreator:
                              'inputFile': inputFile
                            }
 
+          context1.outputs = {
+                             'rpkm_output': rpkm_output
+                            }
           context.outputs = {
-                             'rpkm_output': rpkm_output,
-                             'biom_output': biom_output,
+                             'microbecensusoutput': microbecensus_output,
                              'stats_file': stats_file
                             }
 
           pyScript = self.configs.METAPATHWAYS_PATH + self.configs.RPKM_CALCULATION
 
-          cmd = "%s -c %s  --rpkmExec %s --rpkmdir %s -O %s -o %s -b %s --sample_name  %s --stats %s --bwaFolder %s --bwaExec %s"\
+          cmd = "%s -c %s  --rpkmExec %s --readsdir %s -O %s -o %s --sample_name  %s --stats %s --bwaFolder %s --bwaExec %s -m %s"\
                 % (pyScript, context.inputs['output_fas'], context.inputs['rpkmExec'],\
                    context.inputs['rpkm_input'], context.inputs['output_gff'],\
-                 context.outputs['rpkm_output'], context.outputs['biom_output'],  s.sample_name, context.outputs['stats_file'],\
-                 context.inputs['bwaFolder'], context.inputs['bwaExec'])
+                 context1.outputs['rpkm_output'],  s.sample_name, context.outputs['stats_file'],\
+                 context.inputs['bwaFolder'], context.inputs['bwaExec'], context.outputs['microbecensusoutput'])
                 
           context.status = self.params.get('metapaths_steps', 'COMPUTE_RPKM') 
 
@@ -1143,6 +1158,49 @@ class ContextCreator:
           context.message = self._Message("RUNNING RPKM_CALCULATION")
           return contexts
 
+      def create_biom_cmd(self, s):
+          """CREATE BIOM"""
+          contexts = []
+
+          '''input'''
+          blast_results_dir = s.blast_results_dir 
+          output_results_rRNA_dir=s.output_results_rRNA_dir 
+          '''output'''
+          readcounts_file = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orfwise.read_counts.txt"
+          readrpkgs_file = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orfwise.read_counts.txt"
+          results_biom_dir = s.output_results_biom_dir 
+          place_holder_file = s.output_results_biom_dir + PATHDELIM + s.sample_name + ".dummy.txt" 
+
+          context = Context()
+          context1 = Context()
+          context.name = 'CREATE_BIOM'
+          context.inputs = {
+                             'blast_results_dir':blast_results_dir,
+                             'results_rRNA_dir':output_results_rRNA_dir,
+                             'readcounts':readcounts_file,
+                             'readrpkgs': readrpkgs_file,
+                           }
+
+          context1.outputs = {
+                             'results_biom_dir': results_biom_dir
+                            }
+          context.outputs = {
+                             'place_holder_file': place_holder_file
+                            }
+
+          pyScript = self.configs.METAPATHWAYS_PATH + self.configs.CREATE_BIOM
+
+          cmd = "%s -B %s -s %s -R %s  --readcounts %s --readrpkgs %s -O %s"\
+                % (pyScript, context.inputs['blast_results_dir'], s.sample_name,\
+                   context.inputs['results_rRNA_dir'], context.inputs['readcounts'],\
+                 context.inputs['readrpkgs'], context1.outputs['results_biom_dir'])
+                
+          context.status = self.params.get('metapaths_steps', 'COMPUTE_RPKM') 
+
+          context.commands = [cmd]  
+          contexts.append(context)
+          context.message = self._Message("CREATING BIOM FILES")
+          return contexts
 
       # def create_pgdb_using_pathway_tools_cmd(self, s):
       #     """BUILD PGDB"""
@@ -1230,6 +1288,7 @@ class ContextCreator:
            self.factory['BUILD_PGDB'] = self.create_pgdb_using_pathway_tools_cmd
            self.factory['MLTREEMAP_CALCULATION'] = self.create_mltreemap_cmd
            self.factory['COMPUTE_RPKM'] = self.create_rpkm_cmd
+           self.factory['CREATE_BIOM'] = self.create_biom_cmd
 
            self.stageList['AMINO-FASTA'] = [
                              ['PREPROCESS_AMINOS',
@@ -1261,7 +1320,8 @@ class ContextCreator:
                               'CREATE_ANNOT_REPORTS',
                             #  'MLTREEMAP_CALCULATION',
                               'BUILD_PGDB',
-                              'COMPUTE_RPKM']
+                              'COMPUTE_RPKM',
+                              'CREATE_BIOM' ]
                              ]
            
            self.stageList['AMINO-GENBANK-UNANNOT'] = [

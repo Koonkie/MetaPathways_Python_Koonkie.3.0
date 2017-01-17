@@ -1,0 +1,11 @@
+orf_id	ref dbname	EC	product	value
+1_1	kegg-uniprot-2016-10-20		Modification methylase OS Methanococcus aeolicus (strain ATCC BAA-1280 / DSM 17508 OCM 812 Nankai-3) GN PE 3 SV 1 K00571	20.0
+
+1_2	kegg-uniprot-2016-10-20		Putative restriction endonuclease OS Herpetosiphon aurantiacus (strain ATCC 23779 / DSM 785) GN PE 4 SV 1 K07454	18.0
+
+0_0	kegg-uniprot-2016-10-20		Succinate dehydrogenase or fumarate reductase, flavoprotein subunit OS Chlorobium limicola (strain DSM 245 / NBRC 103803 6330) GN PE 4 SV 1 K00239	23.0
+
+0_1	kegg-uniprot-2016-10-20		4Fe-4S ferredoxin iron-sulfur binding domain protein OS Chlorobium limicola (strain DSM 245 / NBRC 103803 6330) GN PE 4 SV 1 K00240	21.0
+
+0_3	kegg-uniprot-2016-10-20		RNA polymerase sigma-70 factor, ECF subfamily OS Chlorobium tepidum (strain ATCC 49652 / DSM 12025 NBRC 103806 TLS) GN CT0502 PE 3 SV 1 K03088	25.0
+

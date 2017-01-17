@@ -73,6 +73,16 @@ def getShortContigId(contigname):
 
     return shortContigname
 
+def ContigID(contigname):
+    contigNameRegEx = re.compile(r'^(\S+_\d+)_\d+$')
+    shortContigname = "" 
+    pos  = contigNameRegEx.search(contigname)
+    if pos: 
+        shortContigname = pos.group(1)
+
+    return shortContigname
+
+
 def getSampleNameFromContig(contigname):
     contigNameRegEx = re.compile(r'(.*)_(\d+)$')
     sampleName = "" 
@@ -953,10 +963,15 @@ class WorkflowLogger(object):
 
 
 
-def ShortenORFId(_orfname) :
+def ShortenORFId(_orfname, RNA=False) :
+    
     ORFIdPATT = re.compile("(\\d+_\\d+)$")
+    RNAPATT = re.compile("(\\d+_\\d+_[tr]RNA)$")
 
-    result =  ORFIdPATT.search(_orfname)
+    if RNA:
+       result =  RNAPATT.search(_orfname)
+    else:
+       result =  ORFIdPATT.search(_orfname)
 
     if result:
       shortORFname = result.group(1)
@@ -965,17 +980,26 @@ def ShortenORFId(_orfname) :
     return shortORFname
 
 def ShortentRNAId(_orfname) :
-    ORFIdPATT = re.compile("(\\d+_tRNA)$")
+    ORFIdPATT = re.compile("(\\d+_\\d+_tRNA)$")
 
     result =  ORFIdPATT.search(_orfname)
 
     if result:
       shortORFname = result.group(1)
+      
     else:
         return ""
     return shortORFname
 
+def ShortenrRNAId(_orfname) :
+    ORFIdPATT = re.compile("(\\d+_\\d+_rRNA)$")
 
+    result =  ORFIdPATT.search(_orfname)
+    if result:
+      shortORFname = result.group(1)
+    else:
+        return ""
+    return shortORFname
 
 
 def ShortenContigId(_contigname) :

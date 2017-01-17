@@ -7,9 +7,12 @@
 [submodule "executables/source/bwa"]
 	path = executables/source/bwa
 	url = https://github.com/lh3/bwa
-[submodule "executables/source/FAST"]
-	path = executables/source/FAST
-	url = https://github.com/hallamlab/FAST
 [submodule "executables/source/rpkm"]
 	path = executables/source/rpkm
 	url = https://github.com/kishori82/MetaPathways_rpkm
+[submodule "executables/source/MicrobeCensus"]
+	path = executables/source/MicrobeCensus
+	url = https://github.com/snayfach/MicrobeCensus
+[submodule "executables/source/LAST-Plus"]
+	path = executables/source/LAST-Plus
+	url = https://github.com/hallamlab/LAST-Plus

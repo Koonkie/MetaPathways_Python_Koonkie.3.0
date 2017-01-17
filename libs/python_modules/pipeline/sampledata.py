@@ -125,6 +125,7 @@ class SampleData():
         self.mltreemap_image_output = self.output_results_mltreemap_dir  + PATHDELIM + "tables_and_figures" + PATHDELIM 
         self.output_fasta_pf_dir=  self.output_dir + PATHDELIM + "ptools" + PATHDELIM
         self.output_results_pgdb_dir  = self.output_results + PATHDELIM + "pgdb"  + PATHDELIM
+        self.output_results_biom_dir  = self.output_results + PATHDELIM + "biom"  + PATHDELIM
         self.output_results_rRNA_dir  = self.output_results +  PATHDELIM + "rRNA"  + PATHDELIM
         self.output_results_tRNA_dir  = self.output_results +  PATHDELIM + "tRNA"   + PATHDELIM
         self.run_stats_file = self.output_run_statistics_dir + PATHDELIM + self.sample_name + ".run.stats.txt"
@@ -182,6 +183,7 @@ class SampleData():
         #checkOrCreateFolder(mltreemap_image_output) 
         checkOrCreateFolder(self.output_fasta_pf_dir)
         checkOrCreateFolder(self.output_results_pgdb_dir)
+        checkOrCreateFolder(self.output_results_biom_dir)
         checkOrCreateFolder(self.output_results_rRNA_dir)
         checkOrCreateFolder(self.output_results_tRNA_dir)
 

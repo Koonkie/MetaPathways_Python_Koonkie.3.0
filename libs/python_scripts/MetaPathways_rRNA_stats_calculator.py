@@ -154,6 +154,7 @@ def append_taxonomic_information(databaseSequences, table, params):
         if name:
           taxMapping[name] = taxonomy
 
+     print table
      for key in  table:
        key = str(key)
        if int(table[key][5] - table[key][4] ) > params['length'] and table[key][0] > params['similarity'] and table[key][1] < params['evalue'] and table[key][2] > params['bitscore']:
