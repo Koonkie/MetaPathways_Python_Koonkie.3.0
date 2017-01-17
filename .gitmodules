@@ -13,6 +13,6 @@
 [submodule "executables/source/MicrobeCensus"]
 	path = executables/source/MicrobeCensus
 	url = https://github.com/snayfach/MicrobeCensus
-[submodule "executables/source/LAST-Plus"]
-	path = executables/source/LAST-Plus
-	url = https://github.com/hallamlab/LAST-Plus
+[submodule "executables/source/FAST"]
+	path = executables/source/FAST
+	url = https://github.com/hallamlab/FAST
