@@ -22,26 +22,32 @@ METAPATHWAYS_DB_TAG=Metapathways_DBs_2016-04.tar.xz
 
 all: $(BINARY_FOLDER) $(PRODIGAL)  $(LASTPlus)  $(BWA) $(TRNASCAN)  $(RPKM) $(BLASTP) $(MICROBE_CENSUS) $(METAPATHWAYS_DB)
 
-$(TRNASCAN):  
+
+gitmodules:
+	git submodule init
+	git submodule update
+
+$(TRNASCAN): gitmodules
 	$(MAKE) $(CFLAGS) executables/source/trnascan 
 	mv executables/source/trnascan/trnascan-1.4 $(BINARY_FOLDER)/
 
-$(RPKM):  
+$(RPKM): gitmodules
 	$(MAKE) $(CFLAGS) executables/source/rpkm 
 	mv executables/source/rpkm/rpkm $(BINARY_FOLDER)/
 
-$(BWA):  
+$(BWA): gitmodules
 	$(MAKE) $(CFLAGS) executables/source/bwa 
 	mv executables/source/bwa/bwa $(BINARY_FOLDER)/
 
-$(PRODIGAL):  
+$(PRODIGAL): gitmodules
 	$(MAKE) $(CFLAGS) executables/source/prodigal 
 	mv executables/source/prodigal/prodigal $(BINARY_FOLDER)/
 
-$(LASTPlus):  
-	$(MAKE) $(CFLAGS) executables/source/LAST-Plus
-	mv executables/source/LAST-Plus/lastal+ $(BINARY_FOLDER)/
-	mv executables/source/LAST-Plus/lastdb+ $(BINARY_FOLDER)/
+$(FAST): gitmodules
+	$(MAKE) $(CFLAGS) executables/source/FAST 
+	mv executables/source/FAST/fastal $(BINARY_FOLDER)/
+	mv executables/source/FAST/fastdb $(BINARY_FOLDER)/
+
 
 $(BLASTP): $(NCBI_BLAST) 
 	@echo -n "Extracting the binaries for BLAST...." 
