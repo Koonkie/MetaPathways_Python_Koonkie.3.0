@@ -13,3 +13,9 @@ executables/ubuntu/lastdb+
 executables/ubuntu/bwa
 executables/ubuntu/prodigal
 executables/ubuntu/rpkm
+executables/source/LAST-Plus/last-merge-batches+
+executables/source/LAST-Plus/last-split+
+executables/source/bwa-0.7.7/bwa
+executables/source/bwa-0.7.7/libbwa.a
+executables/source/prodigal.v2_00/prodigal
+executables/source/trnascan/trnascan-1.4
