@@ -148,7 +148,7 @@ def get_sample_name(gff_file_name):
      return sample_name
 
 
-def process_gff_file(gff_file_name, output_filenames, nucleotide_seq_dict, protein_seq_dict, input_filenames, compact_output=True):
+def process_gff_file(gff_file_name, output_filenames, nucleotide_seq_dict, protein_seq_dict, input_filenames, orf_to_taxonid = {},  compact_output=True):
      #print output_filenames
      try:
         gfffile = open(gff_file_name, 'r')
@@ -174,10 +174,10 @@ def process_gff_file(gff_file_name, output_filenames, nucleotide_seq_dict, prote
        write_gbk_file(output_filenames['gbk'], contig_dict, sample_name, nucleotide_seq_dict, protein_seq_dict)
 
      if "ptinput" in output_filenames:
-       write_ptinput_files(output_filenames['ptinput'], contig_dict, sample_name, nucleotide_seq_dict, protein_seq_dict, compact_output)
+       write_ptinput_files(output_filenames['ptinput'], contig_dict, sample_name, nucleotide_seq_dict, protein_seq_dict, compact_output, orf_to_taxonid=orf_to_taxonid)
 
 # this function creates the pathway tools input files
-def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_seq_dict, protein_seq_dict, compact_output):
+def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_seq_dict, protein_seq_dict, compact_output, orf_to_taxonid={}):
 
      try:
         #print output_dir_name
@@ -215,13 +215,20 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
            id  =  attrib['id']
 
            shortid=""
+           compactid = ""
 
            if attrib['feature']=='CDS':
               shortid  =  prefix + ShortenORFId(attrib['id'])
+              compactid =  ShortenORFId(attrib['id'])
+
            if attrib['feature']=='rRNA':
               shortid  =  prefix + ShortenrRNAId(attrib['id'])
+              compactid =  ShortenrRNAId(attrib['id'])
+
            if attrib['feature']=='tRNA':
               shortid  =  prefix + ShortentRNAId(attrib['id'])
+              compactid =  ShortentRNAId(attrib['id'])
+
 
            try:
               protein_seq = protein_seq_dict[id]
@@ -254,11 +261,14 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
                 first_hits[attrib['product']]['n'] =shortid
                 first_hits[attrib['product']]['ec'] =attrib['ec']
 
-       
-           write_to_pf_file(output_dir_name, shortid, attrib)
+           if compactid in orf_to_taxonid: 
+               attrib['taxon'] = orf_to_taxonid[compactid]
+
+           write_to_pf_file(output_dir_name, shortid, attrib, compact_output=compact_output)
 
            # append to the gen elements file
-           append_genetic_elements_file(genetic_elements_file, output_dir_name, shortid)
+           if compact_output==False:
+              append_genetic_elements_file(genetic_elements_file, output_dir_name, shortid)
         #endfor
 
 
@@ -273,8 +283,12 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
         fastaStr=wrap("",0,62, contig_seq)
 
            #write_ptools_input_files(genetic_elements_file, output_dir_name, shortid, fastaStr)
-        write_input_sequence_file(output_dir_name, shortid, fastaStr)
+        if compact_output==False:
+           write_input_sequence_file(output_dir_name, shortid, fastaStr)
      #endif 
+
+     if compact_output==True:
+        add_genetic_elements_file(genetic_elements_file)
 
      rename(output_dir_name + "/tmp.reduced.txt",output_dir_name + "/reduced.txt")
 
@@ -297,9 +311,17 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
      genetic_elements_file.close()
      rename(output_dir_name + "/.tmp.genetic-elements.dat", output_dir_name + "/genetic-elements.dat")
 
-def write_to_pf_file(output_dir_name, shortid, attrib):
 
-    pfFile = open(output_dir_name + "/" + shortid + ".pf", 'w')
+pfFile = None
+
+def write_to_pf_file(output_dir_name, shortid, attrib, compact_output):
+    global pfFile
+    if compact_output:
+       if pfFile==None:
+          pfFile = open(output_dir_name + "/" + "0.pf", 'w')
+    else:
+       pfFile = open(output_dir_name + "/" + shortid + ".pf", 'w')
+
     try: 
        fprintf(pfFile, "ID\t%s\n", shortid)
        fprintf(pfFile, "NAME\t%s\n", shortid)
@@ -315,7 +337,11 @@ def write_to_pf_file(output_dir_name, shortid, attrib):
        for function in prod_attributes['FUNCTION']:
           fprintf(pfFile, "FUNCTION\t%s\n", function)
           #printf("FUNCTION\t%s\n", function)
-           
+       
+       if 'taxon' in attrib:
+          fprintf(pfFile, "TAXONOMIC-ANNOT\tTAX-%s\n", attrib['taxon'])
+
+    
        for dblink in prod_attributes['DBLINK']:
           fprintf(pfFile, "DBLINK\t%s:%s\n", dblink[0], dblink[1])
           #printf("DBLINK\t%s:%s\n", dblink[0], dblink[1])
@@ -348,6 +374,9 @@ def write_to_pf_file(output_dir_name, shortid, attrib):
     except:
        fprintf(pfFile, "FUNCTION\t%s \n", 'hypothetical protein')
 
+
+
+
     if attrib['feature']=='CDS':
        fprintf(pfFile, "PRODUCT-TYPE\tP\n")
 
@@ -356,9 +385,12 @@ def write_to_pf_file(output_dir_name, shortid, attrib):
 
     if attrib['feature']=='rRNA':
        fprintf(pfFile, "PRODUCT-TYPE\trRNA\n")
-
     fprintf(pfFile, "//\n")
-    pfFile.close()
+
+    if compact_output:
+       pass
+    else:
+       pfFile.close()
 
 
 def  create_product_attributes(product) :
@@ -475,6 +507,16 @@ def write_input_sequence_file(output_dir_name, shortid, contig_sequence):
     seqfile = open(output_dir_name + "/" + shortid + ".fasta", 'w')
     fprintf(seqfile, ">%s\n%s",shortid, contig_sequence);
     seqfile.close()
+
+
+
+def add_genetic_elements_file(genetic_elementsfile):
+    fprintf(genetic_elementsfile,"ID\t0\n")
+    fprintf(genetic_elementsfile,"NAME\t0\n")
+    fprintf(genetic_elementsfile,"TYPE\t:CONTIG\n")
+    fprintf(genetic_elementsfile,"ANNOT-FILE\t0.pf\n")
+    fprintf(genetic_elementsfile,"//\n")
+
 
 def append_genetic_elements_file(genetic_elementsfile, output_dir_name, shortid):
     fprintf(genetic_elementsfile,"ID\t%s\n", shortid)
@@ -709,13 +751,43 @@ def process_sequence_file(sequence_file_name,  seq_dictionary, shortorfid=False)
      #print blast_file + ' ' + tax_maps + ' ' + database
 
 
-usage =  sys.argv[0] + """ -g gff_files -n nucleotide_sequences -p protein_sequences [--out-gbk gbkfile --out-sequin sequinfile --out-ptinput ptinputdir]\n"""
+usage =  sys.argv[0] + """ -g gff_files -n nucleotide_sequences -p protein_sequences [--out-gbk gbkfile --out-ptinput ptinputdir]\n"""
 
 parser = None
 
+def read_taxons_for_orfs(ncbi_taxonomy_tree, taxonomy_table):
+    num = 20
+
+    name_to_taxonid = {}
+    with open(ncbi_taxonomy_tree, 'r') as f:
+        for _line in f:
+           fields = [ x.strip() for x in _line.split('\t') ]
+           if len(fields) == 2:
+              name_to_taxon[fields[0]] = fields[1]
+
+
+    tax_PATT = re.compile(r'(\d+)')
+    orf_to_taxonid = {}
+    tax_col = 0
+    with open(taxonomy_table, 'r') as f:
+        fields = [ x.strip() for x in f.readline().strip().split('\t') ]
+        for i in range(0, len(fields)):
+           if fields[i]=='taxonomy':
+              tax_col =i
+        
+        for _line in f:
+           fields = [ x.strip() for x in _line.split('\t') ]
+           if len(fields) > tax_col:
+              res = tax_PATT.search(fields[tax_col])
+              if res:
+                  orf_to_taxonid[fields[0]] = res.group(1)
+
+    return orf_to_taxonid
+          
+
 def createParser():
     global parser
-    epilog = """This script has three functions : (i) The functional and taxonomic annotations created for the individual ORFs are used to create the inputs required by the Pathway-Tools's Pathologic algorithm to build the ePGDBs. The input consists of 4 files that contains functional annotations and sequences with relevant information, this information is used by Pathologic to create the ePGDBs. (ii) It can create a genbank file for the ORFs and their annotations, (iii) An option is added where it can create a sequin file, which is required for sometimes for sequence submission to NCBI data repository, such as trace archive"""
+    epilog = """This script has three functions : (i) The functional and taxonomic annotations created for the individual ORFs are used to create the inputs required by the Pathway-Tools's Pathologic algorithm to build the ePGDBs. The input consists of 4 files that contains functional annotations and sequences with relevant information, this information is used by Pathologic to create the ePGDBs. (ii) It can create a genbank file for the ORFs and their annotationsequi"""
     epilog = re.sub(r'\s+', ' ', epilog)
 
     parser = optparse.OptionParser(usage=usage, epilog = epilog)
@@ -746,21 +818,18 @@ def createParser():
 
     output_options_group.add_option("--out-gbk", dest="gbk_file", default = None, 
                      help='option to create a genbank file')
-    output_options_group.add_option("--out-sequin", dest="sequin_file",  default=None,
-                     help='option to create a sequin file')
-    output_options_group.add_option("--sequin-params-file", dest="sequin_params_file", 
-                     help='NCBI sequin parameters  file')
 
-    output_options_group.add_option("--sequin-tbl2asn", dest="sequin_tbl2asn", 
-                     help='the executable for the NCBI tbl2asn')
+    output_options_group.add_option("--ncbi-tree", dest="ncbi_taxonomy_tree",  default=None,
+                       help='add the ncbi taxonomy tree ')
 
-    output_options_group.add_option("--ncbi-sbt-file", dest="ncbi_sbt_file", 
-                     help='the NCBI sbt file location created by the \"Create Submission Template\" form: http://www.ncbi.nlm.nih.gov/WebSub/temp    late.cgi"the sbt file executable for the NCBI tbl2asn')
+    output_options_group.add_option("--taxonomy-table", dest="taxonomy_table",  default=None,
+                       help='table with taxonomy')
+
 
     output_options_group.add_option("--out-ptinput", dest="ptinput_file",  default=None,
                      help='option and directory  to create ptools input files')
 
-    output_options_group.add_option("--compact_output", dest="compact_output",  default=False, action='store_true',
+    output_options_group.add_option("--compact-output", dest="compact_output",  default=False, action='store_true',
                      help='option to create compact orfid names')
 
     parser.add_option_group(output_options_group)
@@ -785,14 +854,10 @@ def main(argv, errorlogger = None, runstatslogger = None):
        errorlogger.printf("ERROR\tGFF file not specified\n")
 
 
-    if not options.gbk_file and not options.sequin_file and not options.ptinput_file:
-       eprintf("ERROR:No genbank or sequin or ptools input is specified\n")
+    if not options.gbk_file and not options.ptinput_file:
+       eprintf("ERROR:No genbank or ptools input is specified\n")
        return (0,'')
 
-
-    if options.sequin_file and  not options.sequin_params_file:
-        parser.error('Cannot create NCBI Sequin input without a parameter file')
-     
 
     if not path.exists(options.gff_file):
         print "gff file does not exist"
@@ -813,13 +878,6 @@ def main(argv, errorlogger = None, runstatslogger = None):
     if  options.gbk_file:
        output_files['gbk'] = options.gbk_file
 
-    if  options.sequin_file:
-       output_files['sequin'] = options.sequin_file
-       input_files['sequin_params'] = options.sequin_params_file
-       input_files['sequin_fasta'] = options.nucleotide_sequences
-       input_files['sequin_tbl2asn'] = options.sequin_tbl2asn
-       input_files['sequin_sbt_file'] = options.ncbi_sbt_file
-
 
     if  options.ptinput_file:
        output_files['ptinput'] = options.ptinput_file
@@ -833,8 +891,12 @@ def main(argv, errorlogger = None, runstatslogger = None):
 
     if options.protein_sequences and  path.exists(options.protein_sequences):
        process_sequence_file(options.protein_sequences, protein_seq_dict) 
+    
+    orf_to_taxonid={}
+    if options.ncbi_taxonomy_tree!=None and options.taxonomy_table !=None:
+      orf_to_taxonid = read_taxons_for_orfs(options.ncbi_taxonomy_tree, options.taxonomy_table)
 
-    process_gff_file(options.gff_file, output_files, nucleotide_seq_dict, protein_seq_dict, input_files, compact_output=options.compact_output) 
+    process_gff_file(options.gff_file, output_files, nucleotide_seq_dict, protein_seq_dict, input_files,  orf_to_taxonid=orf_to_taxonid, compact_output=options.compact_output) 
     #print params['bitscore']
  
     sample_name = get_sample_name(options.gff_file)

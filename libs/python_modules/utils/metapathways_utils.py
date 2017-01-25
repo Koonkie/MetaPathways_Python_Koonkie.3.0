@@ -93,7 +93,7 @@ def getSampleNameFromContig(contigname):
     return sampleName
 
 def strip_taxonomy(product):
-   func = re.sub(r'\[[^\[]+\]', '', product)
+   func = re.sub(r'\[[^\[\]]+\]', '', product)
    return func
 
 

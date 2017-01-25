@@ -519,20 +519,25 @@ def create_annotation(dbname_weight, results_dictionary, input_gff,  rRNA_16S_st
    # for dbname in dbnames:
    #   print dbname, len(results_dictionary[dbname].keys())
    #   print results_dictionary[dbname].keys()
+    values= {}
     i = 0
     for contig in  gffreader:
        count = 0
        for orf in  gffreader.orf_dictionary[contig]:
-         value = 0.0001
+         for dbname in dbnames: 
+           values[dbname] =0.0001
+
          success =False
          output_comp_annot_file1_Str = ''
          output_comp_annot_file2_Str = ''
          for dbname in dbnames:
             weight = dbname_weight[dbname]
             orf_id = orf['id']
+
             if orf_id in results_dictionary[dbname]:
-                if value < results_dictionary[dbname][orf_id]['value']:
-                    value = results_dictionary[dbname][orf_id]['value']
+
+                if values[dbname] < results_dictionary[dbname][orf_id]['value']:
+                    values[dbname] = results_dictionary[dbname][orf_id]['value']
     #                print value, dbname
                     candidatedbname=dbname
                     success =True
@@ -629,7 +634,6 @@ def process_product(product, database, similarity_threshold=0.9):
 
     processed_product = ''
 
-    # print 'dbase', database
     # COG
     if database == 'cog':
         results = re.search(r'Function: (.+?) #', product)
@@ -659,8 +663,9 @@ def process_product(product, database, similarity_threshold=0.9):
     # RefSeq: split and process
     elif database == 'refseq':
         for subproduct in product.split('; '):
-            subproduct = re.sub(r'[a-z]{2,}\|(.+?)\|\S*', '', subproduct)
             subproduct = re.sub(r'\[.+?\]', '', subproduct)
+            subproduct = re.sub(r'[a-z]{2,}\|(.+?)\|\S*', '', subproduct)
+            subproduct = re.sub(r'\[', '', subproduct)
             if subproduct.strip():
                 processed_product=subproduct.strip()
 
@@ -694,13 +699,12 @@ def process_product(product, database, similarity_threshold=0.9):
                 processed_product=subproduct.strip()
 
     # MetaCyc: split and process
-
     # Generic
     else:
-
         processed_product=strip_taxonomy(product)
+        processed_product = re.sub(r'\[.*\]', '', processed_product)
 
-    words = [ x.strip() for x in processed_product.split() ]
+    words = [x.strip() for x in processed_product.split() ]
     filtered_words =[]
     underscore_pattern = re.compile("_")
     arrow_pattern = re.compile(">")
@@ -754,7 +758,7 @@ class BlastOutputTsvParser(object):
            for x in fields:
              self.fieldmap[x] = k 
              k+=1
-           eprintf("\nProcessing database : %s\n", dbname)
+           eprintf("Processing database : %s\n", dbname)
            
         except AttributeError:
            eprintf("Cannot read the map file for database :%s\n", dbname)
@@ -851,6 +855,7 @@ def process_parsed_blastoutput(dbname, weight,  blastoutput, cutoffs, annotation
     annotation = {}
     for data in blastparser:
         #if count%10000==0:
+
         if isWithinCutoffs(data, cutoffs) :
   
            #print data['query'] + '\t' + str(data['q_length']) +'\t' + str(data['bitscore']) +'\t' + str(data['expect']) +'\t' + str(data['identity']) + '\t' + str(data['bsr']) + '\t' + data['ec'] + '\t' + data['product']
@@ -945,6 +950,8 @@ def main(argv, errorlogger =None, runstatslogger = None):
 
     priority = 6000
     count_annotations = {}
+    
+    print ''
     for dbname, blastoutput, weight in zip(database_names, input_blastouts, weight_dbs): 
         results_dictionary[dbname]={}
         dbname_weight[dbname] = weight

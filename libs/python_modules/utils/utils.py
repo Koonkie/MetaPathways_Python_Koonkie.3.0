@@ -24,9 +24,12 @@ try:
     from libs.python_modules.parsers.fastareader  import FastaReader
     from libs.python_modules.utils.sysutil import pathDelim
 except:
-    print "Cannot load some modules"
-    sys.exit(0)
-   
+    print """ Could not load some user defined  module functions"""
+    print """ Make sure your typed \'source MetaPathwaysrc\'"""
+    print """ """
+    print traceback.print_exc(10)
+    sys.exit(3)
+
 
 def fprintf(file, fmt, *args):
    file.write(fmt % args)

@@ -12,7 +12,9 @@ __status__ = "Release"
 try:
     from os import makedirs, sys, remove, rename
     from sys import path
-    import re, traceback
+   
+
+    import os, re, traceback
     from optparse import OptionParser, OptionGroup
     from glob import glob
     from libs.python_modules.utils.metapathways_utils  import parse_command_line_parameters, fprintf, printf, eprintf
@@ -220,12 +222,15 @@ def isWithinCutoffs(data, cutoffs):
 def  read_orf_read_counts(orf_read_counts, readcounts_file):
     if readcounts_file==None: 
        return
+
     comment_PATT = re.compile(r'^#')
     with open(readcounts_file, 'r') as finput:
       for line in finput:
          if not comment_PATT.search(line):
             fields = [ x.strip() for x in  line.split('\t') ]
+             
             orf_read_counts[fields[0]] = float(fields[1])
+            print  orf_read_counts[fields[0]], float(fields[1])
 
 # compute the refscores
 def process_parsed_blastoutput(dbname,  blastoutput, opts, orf_read_counts):
@@ -245,7 +250,7 @@ def process_parsed_blastoutput(dbname,  blastoutput, opts, orf_read_counts):
                hit_counts[target] += orf_read_counts[data['query']]
             else:
                #print 'query', data['query']
-               hit_counts[target] += 0
+               hit_counts[target] += 1
             #print data
     #for name in hit_counts:
     #   print name, hit_counts[name]
@@ -259,13 +264,15 @@ def process_parsed_blastoutput(dbname,  blastoutput, opts, orf_read_counts):
        for name in hit_counts:
           fprintf(fout, "%s\t%d\n", name, hit_counts[name])
 
+ 
     runBIOMCommand(filename_txt, filename_biom, biomExec="biom")
     return len(hit_counts)
 
 
 def runBIOMCommand(infile, outfile, biomExec="biom"):
-    commands =  [biomExec,  " convert", "-i", infile, "-o", outfile,  "--table-type=\"Gene Table\"", "--to-hdf5"]
+    commands =  [biomExec,  " convert", "-i", infile, "-o", outfile,  "--table-type=\"Gene table\"", "--to-hdf5"]
     result = getstatusoutput(' '.join(commands))
+    
     return result[0]
 
 
@@ -282,7 +289,8 @@ def main(argv, errorlogger =None, runstatslogger = None):
 
     # read the ORFwise counts
     orf_read_counts={}
-    read_orf_read_counts(orf_read_counts, opts.readcounts)
+    if os.path.exists(opts.readcounts):
+       read_orf_read_counts(orf_read_counts, opts.readcounts)
 
     # Functional databases
     database_names, input_blastouts = getParsedBlastFileNames(opts.blastdir, opts.sample_name, opts.algorithm) 
@@ -295,7 +303,9 @@ def main(argv, errorlogger =None, runstatslogger = None):
 
     # rRNA databases
     orf_read_rpkgs={}
-    read_orf_read_counts(orf_read_rpkgs, opts.readrpkgs)
+    if os.path.exists(opts.readrpkgs):
+      read_orf_read_counts(orf_read_rpkgs, opts.readrpkgs)
+
     rRNA_16S_dictionary = {}
     database_names, input_blastouts = getrRNAStatFileNames(opts.rRNAdir, opts.sample_name, opts.algorithm) 
     for dbname, rRNAStatsFile in zip(database_names, input_blastouts): 

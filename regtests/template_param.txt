@@ -26,6 +26,7 @@ annotation:algorithm BLAST
 orf_prediction:algorithm prodigal
 orf_prediction:min_length 60
 orf_prediction:translation_table 11
+orf_prediction:mode meta
 
 # ORF annotation parameters
 annotation:algorithm BLAST
@@ -53,7 +54,7 @@ ptools_settings:taxonomic_pruning no
 
 
 # pipeline execution flags
-# e.g. yes, skip, yes
+# e.g. yes, skip, redo
 metapaths_steps:PREPROCESS_INPUT yes
 metapaths_steps:ORF_PREDICTION yes
 metapaths_steps:FILTER_AMINOS yes

@@ -28,3 +28,4 @@ MetaPathways_DBs
 executables/source/MicrobeCensus
 executables/source/prodigal
 executables/source/LAST-Plus
+regtests/output/B1*

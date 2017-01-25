@@ -804,6 +804,9 @@ class ContextCreator:
           input_nucleotide_fasta = s.preprocessed_dir + PATHDELIM + s.sample_name + ".fasta"
           input_amino_acid_fasta =  s.orf_prediction_dir + PATHDELIM +  s.sample_name + ".qced.faa"
 
+          basencbi = self.configs.REFDBS + PATHDELIM + 'ncbi_tree' 
+          ncbi_tree = basencbi + PATHDELIM + 'ncbi_taxonomy_tree.txt'
+          taxonomy_table = s.output_results_annotation_table_dir + PATHDELIM + s.sample_name + '.functional_and_taxonomic_table.txt'
           '''outputs'''
 
           context = Context()
@@ -813,6 +816,12 @@ class ContextCreator:
           context.inputs = { 
                              'input_annot_gff':input_annot_gff,
                            }
+
+          context.inputs1 = {
+                               'ncbi_tree': ncbi_tree,
+                               'taxonomy_table': taxonomy_table
+                            }
+
 
           context.inputs_optional = { 
                              'input_amino_acid_fasta':input_amino_acid_fasta,
@@ -848,6 +857,9 @@ class ContextCreator:
           if ptinput_status in ['redo'] or ( ptinput_status in ['yes'] and not s.hasPToolsInput() ):
               cmd += ' --out-ptinput ' + context.outputs['output_fasta_pf_dir']
               cmd += ' -n ' + context.inputs_optional['input_nucleotide_fasta']
+              cmd += ' --ncbi-tree ' + context.inputs1['ncbi_tree']
+              cmd += ' --taxonomy-table ' + context.inputs1['taxonomy_table']
+
           context.message = self._Message("PATHOLOGIC INPUT" )
 
           #context.status = self.params.get('metapaths_steps','PATHOLOGIC_INPUT')
@@ -882,6 +894,11 @@ class ContextCreator:
                            'ncbi_taxonomy_tree': basencbi + PATHDELIM + 'ncbi_taxonomy_tree.txt',
                            'ncbi_megan_map': basencbi + PATHDELIM + 'ncbi.map'
                            }
+
+          context.inputs1 = {
+                               'gi_to_taxon_map': basencbi + PATHDELIM + self.configs.GI_TO_TAXONID
+                            }
+
           context.outputs = {
                            'output_results_annotation_table_dir':s.output_results_annotation_table_dir,
                            'output_annot_table':output_annot_table,
@@ -906,7 +923,7 @@ class ContextCreator:
 
           cmd = "%s  --input-annotated-gff %s  --input-kegg-maps %s \
                  --input-cog-maps %s --input-seed-maps %s --input-cazy-maps %s --output-dir %s \
-                 --ncbi-taxonomy-map %s --ncbi-megan-map %s"\
+                 --ncbi-taxonomy-map %s --ncbi-megan-map %s  --lca-gi-to-taxon-map %s"\
                %(\
                   pyScript, \
                   context.inputs['input_annot_gff'],\
@@ -916,7 +933,8 @@ class ContextCreator:
                   context.inputs['CAZY_hierarchy'],\
                   context.outputs['output_results_annotation_table_dir'],\
                   context.inputs['ncbi_taxonomy_tree'],\
-                  context.inputs['ncbi_megan_map']
+                  context.inputs['ncbi_megan_map'],\
+                  context.inputs1['gi_to_taxon_map']
                )
           cmd = cmd + " -D " + s.blast_results_dir + " -s " + s.sample_name + " -a "  + s.algorithm
 
@@ -1167,7 +1185,6 @@ class ContextCreator:
           output_results_rRNA_dir=s.output_results_rRNA_dir 
           '''output'''
           readcounts_file = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orfwise.read_counts.txt"
-          readrpkgs_file = s.output_results_rpkm_dir  + PATHDELIM + s.sample_name + ".orfwise.read_counts.txt"
           results_biom_dir = s.output_results_biom_dir 
           place_holder_file = s.output_results_biom_dir + PATHDELIM + s.sample_name + ".dummy.txt" 
 
@@ -1176,10 +1193,12 @@ class ContextCreator:
           context.name = 'CREATE_BIOM'
           context.inputs = {
                              'blast_results_dir':blast_results_dir,
-                             'results_rRNA_dir':output_results_rRNA_dir,
-                             'readcounts':readcounts_file,
-                             'readrpkgs': readrpkgs_file,
+                             'results_rRNA_dir':output_results_rRNA_dir
                            }
+
+          context.inputs1 = {
+                             'readcounts':readcounts_file
+                            }
 
           context1.outputs = {
                              'results_biom_dir': results_biom_dir
@@ -1190,10 +1209,10 @@ class ContextCreator:
 
           pyScript = self.configs.METAPATHWAYS_PATH + self.configs.CREATE_BIOM
 
-          cmd = "%s -B %s -s %s -R %s  --readcounts %s --readrpkgs %s -O %s"\
+          cmd = "%s -B %s -s %s -R %s  --readcounts %s --readrpkgs %s -O %s --algorithm %s"\
                 % (pyScript, context.inputs['blast_results_dir'], s.sample_name,\
-                   context.inputs['results_rRNA_dir'], context.inputs['readcounts'],\
-                 context.inputs['readrpkgs'], context1.outputs['results_biom_dir'])
+                   context.inputs['results_rRNA_dir'], context.inputs1['readcounts'],\
+                 context.inputs1['readcounts'], context1.outputs['results_biom_dir'], s.algorithm)
                 
           context.status = self.params.get('metapaths_steps', 'COMPUTE_RPKM') 
 
@@ -1252,6 +1271,8 @@ class ContextCreator:
       def __init__(self, params, configs): 
           self.params = Singleton(Params)(params)
           self.configs = Singleton(Configs)(configs)
+          if self.checkConfigFile():
+             exit_process()
           self.initFactoryList()
           pass
 
@@ -1268,6 +1289,56 @@ class ContextCreator:
            return self.stageList[type]
            
 
+
+      def checkConfigFile(self):
+           items= [
+                "PYTHON_EXECUTABLE",
+               "PGDB_FOLDER",
+               "METAPATHWAYS_PATH",
+               "PATHOLOGIC_EXECUTABLE",
+               "REFDBS",
+               "FORMATDB_EXECUTABLE",
+               "BLASTP_EXECUTABLE",
+               "BLASTN_EXECUTABLE",
+               "EXECUTABLES_DIR",
+               "LASTDB_EXECUTABLE",
+               "LAST_EXECUTABLE",
+               "PRODIGAL_EXECUTABLE",
+               "RESOURCES_DIR",
+               "SCAN_tRNA_EXECUTABLE",
+               "RPKM_EXECUTABLE",
+               "BWA_EXECUTABLE",
+               "GBK_TO_FNA_FAA_GFF",
+               "GFF_TO_FNA_FAA_GFF",
+               "PREPROCESS_INPUT",
+               "PREPROCESS_AMINOS",
+               "ORF_PREDICTION",
+               "ORF_TO_AMINO",
+               "COMPUTE_REFSCORES",
+               "FUNC_SEARCH",
+               "PARSE_FUNC_SEARCH",
+               "ANNOTATE_ORFS",
+               "GENBANK_FILE",
+               "CREATE_ANNOT_REPORTS",
+               "RUN_PATHOLOGIC",
+               "SCAN_rRNA",
+               "SCAN_tRNA",
+               "MLTREEMAP_CALCULATION",
+               "RPKM_CALCULATION",
+               "CREATE_BIOM",
+               "NUM_CPUS",
+               "GI_TO_TAXONID"
+             ]
+           error = False
+           for item in items:
+               print item,  getattr(self.configs, item, False) 
+               if not hasattr(self.configs, item) or not getattr(self.configs, item, False) :
+                  print "ERROR: Missing configuration parameter %s in config file" %(item)
+                  error =True
+
+
+           return error
+               
       def initFactoryList(self):
            self.factory['GBK_TO_FNA_FAA_GFF'] = self.convert_gbk_to_fna_faa_gff_unannotated
            self.factory['GBK_TO_FNA_FAA_GFF_ANNOT'] = self.convert_gbk_to_fna_faa_gff_annotated
@@ -1297,10 +1368,8 @@ class ContextCreator:
                              [ 'COMPUTE_REFSCORES',
                               'PARSE_FUNC_SEARCH',
                               'ANNOTATE_ORFS',
-                              'PATHOLOGIC_INPUT',
-                             # 'GENBANK_FILE',  
                               'CREATE_ANNOT_REPORTS',
-                             # 'MLTREEMAP_CALCULATION',
+                              'PATHOLOGIC_INPUT',
                               'BUILD_PGDB' ]
                              ]
            
@@ -1315,10 +1384,8 @@ class ContextCreator:
                               'SCAN_rRNA',
                               'SCAN_tRNA',
                               'ANNOTATE_ORFS',
-                              'PATHOLOGIC_INPUT',
-                             # 'GENBANK_FILE',  
                               'CREATE_ANNOT_REPORTS',
-                            #  'MLTREEMAP_CALCULATION',
+                              'PATHOLOGIC_INPUT',
                               'BUILD_PGDB',
                               'COMPUTE_RPKM',
                               'CREATE_BIOM' ]
@@ -1333,10 +1400,8 @@ class ContextCreator:
                               'SCAN_rRNA',
                               'SCAN_tRNA',
                               'ANNOTATE_ORFS',
-                              'PATHOLOGIC_INPUT',
-                             # 'GENBANK_FILE',  
                               'CREATE_ANNOT_REPORTS',
-                             # 'MLTREEMAP_CALCULATION',
+                              'PATHOLOGIC_INPUT',
                               'BUILD_PGDB']
                              ]
            
