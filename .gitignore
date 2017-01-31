@@ -28,4 +28,5 @@ MetaPathways_DBs
 executables/source/MicrobeCensus
 executables/source/prodigal
 executables/source/LAST-Plus
+executables/source/rpkm
 regtests/output/B1*
