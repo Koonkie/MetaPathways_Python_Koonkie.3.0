@@ -42,6 +42,8 @@ $(GIT_SUBMODULE_UPDATE):
 	git submodule update  --init executables/source/FAST 
 	@echo git submodule update  prodigal
 	git submodule update  --init executables/source/prodigal 
+	@echo git submodule update  MicrobeCensus
+	git submodule update  --init  executables/source/MicrobeCensus
 
 $(TRNASCAN):  
 	$(MAKE) $(CFLAGS) executables/source/trnascan 
