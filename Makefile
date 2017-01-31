@@ -32,8 +32,8 @@ all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRN
 
 .PHONY: $(GIT_SUBMODULE_UPDATE)
 $(GIT_SUBMODULE_UPDATE):
-	@echo git submodule update 
-	git submodule update 
+	@echo git submodule update  trnascan
+	git submodule update  --init executables/source/trnascan 
 
 $(TRNASCAN):  
 	$(MAKE) $(CFLAGS) executables/source/trnascan 
