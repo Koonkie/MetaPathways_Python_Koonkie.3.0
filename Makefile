@@ -34,6 +34,14 @@ all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRN
 $(GIT_SUBMODULE_UPDATE):
 	@echo git submodule update  trnascan
 	git submodule update  --init executables/source/trnascan 
+	@echo git submodule update  rpkm
+	git submodule update  --init executables/source/rpkm 
+	@echo git submodule update  bwa
+	git submodule update  --init executables/source/bwa 
+	@echo git submodule update  FAST
+	git submodule update  --init executables/source/FAST 
+	@echo git submodule update  prodigal
+	git submodule update  --init executables/source/prodigal 
 
 $(TRNASCAN):  
 	$(MAKE) $(CFLAGS) executables/source/trnascan 
