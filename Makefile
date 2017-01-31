@@ -25,8 +25,15 @@ MICROBE_CENSUS=microbe_census
 METAPATHWAYS_DB=MetaPathways_DBs
 METAPATHWAYS_DB_TAG=Metapathways_DBs_2016-04.tar.xz
 
+GIT_SUBMODULE_UPDATE=gitupdate
 
-all: $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(BLASTP) $(MICROBE_CENSUS) $(METAPATHWAYS_DB)
+all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) $(METAPATHWAYS_DB)
+
+
+.PHONY: $(GIT_SUBMODULE_UPDATE)
+$(GIT_SUBMODULE_UPDATE):
+	@echo git submodule update 
+	git submodule update 
 
 $(TRNASCAN):  
 	$(MAKE) $(CFLAGS) executables/source/trnascan 
