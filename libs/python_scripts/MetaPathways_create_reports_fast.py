@@ -125,8 +125,8 @@ def createParser():
                        help='minimum number of reads that must be assigned to a taxon for ' +\
                             'that taxon to be present otherwise move up the tree until there ' +
                             'is a taxon that meets the requirement')
-     lca_options_group.add_option("--lca-gi-to-taxon-map", dest="gi_to_taxon_map",  type='str', default=None,
-                       help='gi to taxon map')
+     lca_options_group.add_option("--lca-gi-to-taxon-map", dest="accession_to_taxon_map",  type='str', default=None,
+                       help='accession to taxon map')
 
      parser.add_option_group(lca_options_group)
 
@@ -1018,8 +1018,8 @@ def main(argv, errorlogger = None,  runstatslogger = None):
     lca = LCAComputation(opts.ncbi_taxonomy_map, opts.ncbi_megan_map)
     lca.setParameters(opts.lca_min_score, opts.lca_top_percent, opts.lca_min_support)
 
-    if opts.gi_to_taxon_map:
-       lca.load_gi_to_taxon_map(opts.gi_to_taxon_map)
+    if opts.accession_to_taxon_map:
+       lca.load_accession_to_taxon_map(opts.accession_to_taxon_map)
 
     blastParsers={}
     for dbname, blastoutput in zip( database_names, input_blastouts):

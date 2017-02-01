@@ -36,7 +36,7 @@ class LCAComputation:
 
     megan_map = {} # hash between NCBI ID and taxonomic name name
     
-    gi_to_taxon_map = {} # hash between gi and taxon name
+    accession_to_taxon_map = {} # hash between gi and taxon name
 
     # initialize with the ncbi tree file 
     def __init__(self, filenames, megan_map=None):
@@ -54,12 +54,12 @@ class LCAComputation:
                 self.megan_map[ fields[0] ] = fields[1]
 
 
-    def load_gi_to_taxon_map(self, gi_to_taxon_file):
-        with open(gi_to_taxon_file) as file:
+    def load_accession_to_taxon_map(self, accession_to_taxon_file):
+        with open(accession_to_taxon_file) as file:
             for line in file:
                 fields = line.split("\t")
                 fields = map(str.strip, fields)
-                self.gi_to_taxon_map[ fields[3] ] = fields[1]
+                self.accession_to_taxon_map[ fields[1] ] = fields[0]
 
 
     def get_preferred_taxonomy(self, ncbi_id):
@@ -230,7 +230,7 @@ class LCAComputation:
 
     # extracts taxon names for a refseq annotation
     def get_species(self, hit):
-        gi_PATT=re.compile(r'gi\|(\d+)\|ref')
+        accession_PATT=re.compile(r'ref\|(.*)\|')
         if not 'product' in hit and not 'target' in hit:
             return None
 
@@ -239,11 +239,11 @@ class LCAComputation:
         try:
             # extracting taxon names here
             if 'target' in hit:
-               gires = gi_PATT.search(hit['target'])
+               gires = accession_PATT.search(hit['target'])
                if gires:
                   gi = gires.group(1)
-                  if gi in self.gi_to_taxon_map:
-                    species.append(self.gi_to_taxon_map[gi])                         
+                  if gi in self.accession_to_taxon_map:
+                    species.append(self.accession_to_taxon_map[gi])                         
             else:
                m = re.findall(r'\[([^\[]+?)\]', hit['product'])
                if m != None:
