@@ -125,8 +125,10 @@ def createParser():
                        help='minimum number of reads that must be assigned to a taxon for ' +\
                             'that taxon to be present otherwise move up the tree until there ' +
                             'is a taxon that meets the requirement')
-     parser.add_option_group(lca_options_group)
+     lca_options_group.add_option("--lca-gi-to-taxon-map", dest="accession_to_taxon_map",  type='str', default=None,
+                       help='accession to taxon map')
 
+     parser.add_option_group(lca_options_group)
 
      compact_io_options_group =  OptionGroup(parser, 'Compact Input/Output Options')
      compact_io_options_group.add_option( "--compact_output", dest="compact_output", action='store_true', default=False,
@@ -1016,6 +1018,9 @@ def main(argv, errorlogger = None,  runstatslogger = None):
     lca = LCAComputation(opts.ncbi_taxonomy_map, opts.ncbi_megan_map)
     lca.setParameters(opts.lca_min_score, opts.lca_top_percent, opts.lca_min_support)
 
+    if opts.accession_to_taxon_map:
+       lca.load_accession_to_taxon_map(opts.accession_to_taxon_map)
+
     blastParsers={}
     for dbname, blastoutput in zip( database_names, input_blastouts):
         blastParsers[dbname] =  BlastOutputTsvParser(dbname, blastoutput + '.tmp')
@@ -1176,8 +1181,12 @@ def process_subsys2peg_file(subsystems2peg, subsystems2peg_file):
      except:
          print "Cannot close " + str(subsystems2peg_file)
 
+
+
+halt =0
 def print_orf_table(results, orfToContig,  output_dir,  outputfile, compact_output=False):
 
+    addHeader =True
     if not path.exists(output_dir):
        makedirs(output_dir)
 
@@ -1192,7 +1201,7 @@ def print_orf_table(results, orfToContig,  output_dir,  outputfile, compact_outp
            if not orf['query'] in orf_dict:
                orf_dict[orf['query']] = {}
  
-           if dbname in orf_dict[orf['query']]:
+           if dbname in orf_dict[orf['query']]:  # only the best hit prevails
                continue
 
            #if orf['query']=='2_0' and dbname=='refseq-nr-2014-01-18':
@@ -1232,6 +1241,8 @@ def print_orf_table(results, orfToContig,  output_dir,  outputfile, compact_outp
            #if dbname=='refseq-nr-2014-01-18':
            #   if orf['query']=='2_0':
            #      print product 
+
+           #adds it anyway
            orf_dict[orf['query']][dbname] =  product
 
     # compute the databases
@@ -1240,26 +1251,54 @@ def print_orf_table(results, orfToContig,  output_dir,  outputfile, compact_outp
        _results = re.search(r'cog', dbname, re.I)
        if _results:
          database_maps['cog'] = dbname
+         continue
+         
 
        _results = re.search(r'kegg', dbname, re.I)
        if _results:
          database_maps['kegg'] = dbname
+         hit=True
+         continue
 
        _results = re.search(r'cazy', dbname, re.I)
        if _results:
          database_maps['cazy'] = dbname
+         continue
 
        _results = re.search(r'seed', dbname, re.I)
        if _results:
          database_maps['seed'] = dbname
+         continue
 
        _results = re.search(r'metacyc', dbname, re.I)
        if _results:
          database_maps['metacyc'] = dbname
+         continue
 
        _results = re.search(r'refseq', dbname, re.I)
        if _results:
          database_maps['refseq'] = dbname
+         continue
+
+       database_maps[dbname] = dbname
+
+
+    std_dbnames = ['cog', 'kegg', 'seed', 'cazy', 'metacyc', 'refseq'] 
+    dbnames = std_dbnames
+
+    headers = ["#  ORF_ID", "CONTIG_ID"]
+    for std_dbname in std_dbnames:
+       headers.append(std_dbname.upper())
+
+    for dbname in sorted(results.keys()):
+       non_std =True
+       for std_dbname in std_dbnames:
+          if re.search(std_dbname, dbname, re.I):
+             non_std =False
+             
+       if non_std:
+         dbnames.append(dbname)
+         headers.append(std_dbname)
 
 
     sampleName = None
@@ -1268,6 +1307,7 @@ def print_orf_table(results, orfToContig,  output_dir,  outputfile, compact_outp
        #  print orfn, '<<',  orf_dict[orfn], ' >> xxxx'
        #_keys =  orf_dict[orfn].keys()
        #_results = re.search(r'cog', dbname, re.I)
+
 
        if 'cog' in database_maps and  database_maps['cog'] in orf_dict[orfn]:
           cogFn = orf_dict[orfn][database_maps['cog']]
@@ -1300,6 +1340,7 @@ def print_orf_table(results, orfToContig,  output_dir,  outputfile, compact_outp
        else:
           refseqFn= ""
     
+
        if not sampleName:
          sampleName = getSampleNameFromContig(orf_dict[orfn]['contig'])
 
@@ -1310,8 +1351,29 @@ def print_orf_table(results, orfToContig,  output_dir,  outputfile, compact_outp
           orfName =  orfn
           contigName= ShortenContigId(contigName)
 
+       row = [ orfName, contigName ]
+       for dbname in dbnames:
+         if dbname in database_maps and database_maps[dbname] in orf_dict[orfn]:
+           row.append(orf_dict[orfn][database_maps[dbname]])
+         else:
+           row.append("")
+
+#       print '\t'.join(headers)
+#       print '\t'.join(row) 
+
+
+
+
+
+
        #fprintf(outputfile, "%s\n", orfName + "\t" + contigName + '\t' + cogFn + '\t' + keggFn +'\t' + seedFn + '\t' + cazyFn + '\t'+ metacycPwy)
-       fprintf(outputfile, "%s\n", orfName + "\t" + contigName + '\t' + cogFn + '\t' + keggFn +'\t' + seedFn + '\t' + cazyFn + '\t'+ metacycPwy + '\t' + refseqFn )
+       if addHeader:
+           #fprintf(outputfile, "# %s\n", '\t'.join(headers)_"ORF_ID" + "\t" + "CONTIG_ID" + '\t' + "COG" + '\t' + "KEGG" +'\t' + "SEED" + '\t' + "CAZY" + '\t'+ "METACYC" + '\t' + "REFSEQ" )
+           fprintf(outputfile, "# %s\n", '\t'.join(headers))
+           addHeader=False
+
+       #fprintf(outputfile, "%s\n", orfName + "\t" + contigName + '\t' + cogFn + '\t' + keggFn +'\t' + seedFn + '\t' + cazyFn + '\t'+ metacycPwy + '\t' + refseqFn )
+       fprintf(outputfile, "%s\n", '\t'.join(row))
 
 
 def MetaPathways_create_reports_fast(argv, errorlogger =  None, runstatslogger = None):

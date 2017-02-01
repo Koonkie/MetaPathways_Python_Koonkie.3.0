@@ -375,6 +375,11 @@ def main(argv):
     command_line_params={}
     command_line_params['verbose']= opts.verbose
 
+    if not path.exists(parameter_fp):
+        eprintf("WARNING:\tNo parameters file %s found!\n" %(parameter_fp))
+        eprintf("INFO:\tCreating a parameters file %s found!\n" %(parameter_fp))
+        create_metapaths_parameters(parameter_fp, cmd_folder)
+
     params=parse_metapaths_parameters(parameter_fp)
 
     """ load the sample inputs  it expects either a fasta 
@@ -418,7 +423,13 @@ def main(argv):
 
 
     #check the pipeline configuration
+
+    if not path.exists(config_file):
+        eprintf("WARNING:\tNo config file %s found!\n" %(config_file))
+        eprintf("INFO:\tCreating a config file %s!\n" %(config_file))
+        create_metapaths_configuration(config_file, cmd_folder)
     config_settings = read_pipeline_configuration(config_file, globalerrorlogger)
+
 
     parameter =  Parameters()
     if not staticDiagnose(config_settings, params, logger = globalerrorlogger):
@@ -435,7 +446,7 @@ def main(argv):
 
     try:
          # load the sample information 
-         print "RUNNING MetaPathways version 2.5.1"
+         print "RUNNING MetaPathways version FogDog 3.0"
          if len(input_output_list): 
               for input_file in sorted_input_output_list:
                 sample_output_dir = input_output_list[input_file]
@@ -481,7 +492,6 @@ def main(argv):
    
         
          # blast the files
-     
          blasting_system =    get_parameter(params,  'metapaths_steps', 'BLAST_REFDB', default='yes')
          if blasting_system =='grid':
             #  blasting the files files on the grids
@@ -506,11 +516,16 @@ def main(argv):
     eprintf("INFO : FINISHED PROCESSING THE SAMPLES \n")
     eprintf("             THE END                   \n")
     eprintf("            ***********                \n")
-    halt_process(opts.delay)
+    #halt_process(opts.delay)
 
 # the main function of metapaths
 if __name__ == "__main__":
     createParser()
-    main(sys.argv[1:])    
+    try:
+      main(sys.argv[1:])    
+    except:
+      sys.exit(1) 
+
+    halt_process(1)
     
 

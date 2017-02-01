@@ -140,7 +140,7 @@ class Parameters():
                           'CREATE_ANNOT_REPORTS'  : {'yes':True, 'skip':True, 'redo':True }, 
                           'MLTREEMAP_CALCULATION'  : {'yes':True, 'skip': True, 'redo':True }, 
                           'BUILD_PGDB'  : {'yes':True, 'skip':True, 'redo':True, },
-                          'COMPUTE_RPKM'  : {'yes':True, 'skip':True, 'redo':True, }
+                          'COMPUTE_RPKM'  : {'yes':True, 'skip':True, 'redo':True, },
                 }
            }
 

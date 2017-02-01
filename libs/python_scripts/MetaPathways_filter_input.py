@@ -364,8 +364,7 @@ def main(argv, errorlogger = None, runstatslogger = None):
          runstatslogger.write("%s\t-avg length\t%s\n" %( str(priority + 7), str(int(stats[AVG_LENGTH][AFTER]))))
          runstatslogger.write("%s\t-max length\t%s\n" %( str(priority + 8), str(stats[MAX_LENGTH][AFTER])) )
          runstatslogger.write("%s\t-total base pairs (bp)\t%s\n" %( str(priority + 9), str(int(stats[AVG_LENGTH][AFTER]* stats[NUMSEQ][AFTER])) ))
-
-
+     
 
 def MetaPathways_filter_input(argv, errorlogger = None, runstatslogger = None):
     createParser()
@@ -376,4 +375,3 @@ def MetaPathways_filter_input(argv, errorlogger = None, runstatslogger = None):
 if __name__ == "__main__":
     createParser()
     main(sys.argv[1:])
-
