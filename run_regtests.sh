@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # To run the tests type ". run_regtests.sh"
 
 
