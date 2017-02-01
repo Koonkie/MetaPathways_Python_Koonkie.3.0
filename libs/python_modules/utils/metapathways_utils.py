@@ -1014,3 +1014,63 @@ def ShortenContigId(_contigname) :
 
     return shortContigname
 
+def create_metapaths_parameters(filename, folder):
+    """ creates a parameters file from the default """
+    default_filename = folder + PATHDELIM + 'resources'+ PATHDELIM + "template_param.txt"
+    try:
+        filep = open(default_filename, 'r')
+    except:
+        eprintf("ERROR: cannot open the default  parameter file " + sQuote(default_filename) ) 
+        exit_process("ERROR: cannot open the default parameter file " + sQuote(default_filename), errorCode = 0 ) 
+
+    lines = filep.readlines()
+    with open(filename, 'w') as newfile:
+       for line in lines:
+         fprintf(newfile, "%s", line);
+         
+    filep.close()
+    #result['filename'] = filename
+    return True
+
+def create_metapaths_configuration(filename, folder):
+    """ creates a cofiguration file from the default """
+    variablePATT = re.compile(r'<([a-zA-Z0-9_]*)>')
+    default_filename = folder  + PATHDELIM + 'resources'+ PATHDELIM + "template_config.txt"
+    try:
+        filep = open(default_filename, 'r')
+    except:
+        eprintf("ERROR: cannot open the default config file " + sQuote(default_filename) ) 
+        exit_process("ERROR: cannot open the default config file " + sQuote(default_filename), errorCode = 0 ) 
+
+    lines = filep.readlines()
+    with open(filename, 'w') as newfile:
+       for line in lines:
+         line = line.strip()
+         result = variablePATT.search(line)
+         if result:
+            VARIABLE=result.group(1)
+            if VARIABLE in os.environ:
+               line =line.replace( '<'+ VARIABLE + '>', os.environ[VARIABLE])
+            else:
+               default =""
+               if VARIABLE=='METAPATHWAYS_PATH':
+                  default = folder + PATHDELIM
+
+               if VARIABLE=='METAPATHWAYS_DB':
+                  default = os.environ['HOME'] + PATHDELIM + 'MetaPathways/databases/'
+
+               line = line.replace('<' + VARIABLE + '>', default)
+               eprintf("INFO: Setting default value for \"%s\" as \"%s\"" %( VARIABLE, default))
+               eprintf("      To set other values :\n")
+               eprintf("                       1.  remove file \"%s\"\n" %(filename))
+               eprintf("                       2.  set the shell variable \"%s\"\n" %(VARIABLE))
+               eprintf("                       3.  rerun command\n")
+               
+               
+         fprintf(newfile, "%s\n", line);
+         
+    filep.close()
+    #result['filename'] = filename
+    return True
+
+

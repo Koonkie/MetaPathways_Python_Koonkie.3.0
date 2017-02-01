@@ -375,6 +375,11 @@ def main(argv):
     command_line_params={}
     command_line_params['verbose']= opts.verbose
 
+    if not path.exists(parameter_fp):
+        eprintf("WARNING:\tNo parameters file %s found!\n" %(parameter_fp))
+        eprintf("INFO:\tCreating a parameters file %s found!\n" %(parameter_fp))
+        create_metapaths_parameters(parameter_fp, cmd_folder)
+
     params=parse_metapaths_parameters(parameter_fp)
 
     """ load the sample inputs  it expects either a fasta 
@@ -418,7 +423,13 @@ def main(argv):
 
 
     #check the pipeline configuration
+
+    if not path.exists(config_file):
+        eprintf("WARNING:\tNo config file %s found!\n" %(config_file))
+        eprintf("INFO:\tCreating a config file %s!\n" %(config_file))
+        create_metapaths_configuration(config_file, cmd_folder)
     config_settings = read_pipeline_configuration(config_file, globalerrorlogger)
+
 
     parameter =  Parameters()
     if not staticDiagnose(config_settings, params, logger = globalerrorlogger):

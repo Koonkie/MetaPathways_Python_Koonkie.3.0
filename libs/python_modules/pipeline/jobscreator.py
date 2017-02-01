@@ -713,7 +713,7 @@ class ContextCreator:
           for rRNArefdb in rRNAdbs:
                rRNA_stat_results= s.output_results_rRNA_dir + s.sample_name +\
                                   '.' + rRNArefdb + '.rRNA.stats.txt' 
-               print rRNA_stat_results
+               #print rRNA_stat_results
                if  hasResults(rRNA_stat_results)  :
                    context.inputs['rRNA_stat_results']  = rRNA_stat_results                   
                    options += " --rRNA_16S " +  context.inputs['rRNA_stat_results'] 
@@ -896,7 +896,7 @@ class ContextCreator:
                            }
 
           context.inputs1 = {
-                               'gi_to_taxon_map': basencbi + PATHDELIM + self.configs.GI_TO_TAXONID
+                               'gi_to_taxon_map': basencbi + PATHDELIM + self.configs.ACCESSION_TO_TAXONID
                             }
 
           context.outputs = {
@@ -1327,11 +1327,11 @@ class ContextCreator:
                "RPKM_CALCULATION",
                "CREATE_BIOM",
                "NUM_CPUS",
-               "GI_TO_TAXONID"
+               "ACCESSION_TO_TAXONID"
              ]
            error = False
            for item in items:
-               print item,  getattr(self.configs, item, False) 
+               #print item,  getattr(self.configs, item, False) 
                if not hasattr(self.configs, item) or not getattr(self.configs, item, False) :
                   print "ERROR: Missing configuration parameter %s in config file" %(item)
                   error =True
