@@ -1,2 +1,0 @@
-ERROR	Sample name C1.C contains a '.' in its name!
-ERROR	Sample names before the  suffixes .fasta, .fas, .fna, .faa or .gbk, must  consist only of alphabets, digits and _; and should consist of at least two characters 

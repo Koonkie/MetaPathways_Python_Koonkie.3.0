@@ -23,14 +23,19 @@ PRODIGAL=$(BINARY_FOLDER)/prodigal
 
 MICROBE_CENSUS=microbe_census
 METAPATHWAYS_DB=MetaPathways_DBs
-METAPATHWAYS_DB_TAG=Metapathways_DBs_2016-04.tar.xz
+METAPATHWAYS_DB_TAR=Metapathways_DBs_2016-04.tar.xz
 
 GIT_SUBMODULE_UPDATE=gitupdate
 
 all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) $(METAPATHWAYS_DB)
 
+## Alias for target 'all', for compliance with FogDog deliverables standard:
+install: all
 
-.PHONY: $(GIT_SUBMODULE_UPDATE)
+
+.PHONY: $(GIT_SUBMODULE_UPDATE) all install test test-microbe-census
+
+
 $(GIT_SUBMODULE_UPDATE):
 	@echo git submodule update  trnascan
 	git submodule update  --init executables/source/trnascan 
@@ -87,8 +92,7 @@ $(MICROBE_CENSUS):
 	@echo  "Installing MicrobeCensus...." 
 	cd executables/source/MicrobeCensus/
 	sudo python setup.py install
-	@echo "Testing installation, may take a few minutes...." 
-	cd tests; python test_microbe_census.py
+
 
 $(METAPATHWAYS_DB_TAR):
 	@echo  "Fetching the databases...." 
@@ -96,11 +100,23 @@ $(METAPATHWAYS_DB_TAR):
 
 $(METAPATHWAYS_DB): $(METAPATHWAYS_DB_TAR)
 	@echo  "Unzipping the database...." 
-	tar -xvf Metapathways_DBs_2016-04.tar.xz 
-  
+	tar -xvJf Metapathways_DBs_2016-04.tar.xz
+
 
 $(BINARY_FOLDER): 
 	@if [ ! -d $(BINARY_FOLDER) ]; then mkdir $(BINARY_FOLDER); fi
+
+test-microbe-census:
+	@echo "Testing installation, may take a few minutes...." 
+	cd executables/source/MicrobeCensus/tests && python test_microbe_census.py
+
+
+test-mp-regression-tests:
+	./run_regtests.sh
+
+
+## Top-level test target
+test: test-microbe-census test-mp-regression-tests
 
 
 clean:
@@ -117,3 +133,4 @@ remove:
 	rm -rf ../$(OS_PLATFORM)/bwa  
 	rm -rf ../$(OS_PLATFORM)/prodigal
 	rm -rf ../$(OS_PLATFORM)/rpkm 
+
