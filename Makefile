@@ -8,13 +8,13 @@ CFLAGS=-C
 ## taken from so://714100/os-detecting-makefile
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	OS=ubuntu
+	OS_PLATFORM = linux
 endif
 ifeq ($(UNAME_S),Darwin)
-	OS=macosx
+	OS_PLATFORM = macosx
 endif
 
-OS_PLATFORM=linux
+
 #should be the same as the EXECUTABLES_DIR in the template_config.txt file
 
 NCBI_BLAST=ncbi-blast-2.6.0+-x64-linux.tar.gz
