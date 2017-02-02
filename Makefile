@@ -35,10 +35,12 @@ METAPATHWAYS_DB_TAR=Metapathways_DBs_2016-04.tar.xz
 
 GIT_SUBMODULE_UPDATE=gitupdate
 
-all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) $(METAPATHWAYS_DB)
+all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) 
 
 ## Alias for target 'all', for compliance with FogDog deliverables standard:
 install: all
+
+install-fogdog-dbs: $(METAPATHWAYS_DB)
 
 
 .PHONY: $(GIT_SUBMODULE_UPDATE) all install test test-microbe-census
@@ -104,11 +106,11 @@ $(MICROBE_CENSUS):
 
 $(METAPATHWAYS_DB_TAR):
 	@echo  "Fetching the databases...." 
-	aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz .
+	aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/$(METAPATHWAYS_DB_TAR) .
 
 $(METAPATHWAYS_DB): $(METAPATHWAYS_DB_TAR)
 	@echo  "Unzipping the database...." 
-	tar -xvJf Metapathways_DBs_2016-04.tar.xz
+	tar -xvJf $(METAPATHWAYS_DB_TAR)
 
 
 $(BINARY_FOLDER): 
