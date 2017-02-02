@@ -5,6 +5,14 @@ LEXFLAGS=-lfl
 CFLAGS=-C
 
 
+## taken from so://714100/os-detecting-makefile
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	OS=ubuntu
+endif
+ifeq ($(UNAME_S),Darwin)
+	OS=macosx
+endif
 
 OS_PLATFORM=linux
 #should be the same as the EXECUTABLES_DIR in the template_config.txt file
