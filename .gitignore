@@ -25,3 +25,5 @@ Metapathways_DBs_2016-04.tar.xz
 MetaPathways_DBs
 regtests/output/B1*
 
+config/template_config.txt
+config/template_param.txt
