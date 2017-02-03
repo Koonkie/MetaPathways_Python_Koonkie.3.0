@@ -27,4 +27,3 @@ regtests/output/B1*
 
 config/template_config.txt
 config/template_param.txt
-!Makefile
