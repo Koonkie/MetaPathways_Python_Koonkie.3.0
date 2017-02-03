@@ -42,6 +42,7 @@ rRNA:min_bitscore 50
 
 # pathway tools parameters
 ptools_settings:taxonomic_pruning no
+ptools_input:compact_mode yes
 
 
 # pipeline execution flags
