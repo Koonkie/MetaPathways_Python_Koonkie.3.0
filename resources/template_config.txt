@@ -15,9 +15,9 @@ REFDBS '<METAPATHWAYS_DB>'
 
 # Executables: replace  'yourOS' to your platform linux-flavor or macosx
 # Bit type - bit32 or bit64 
-FORMATDB_EXECUTABLE 'makeblastdb'
-BLASTP_EXECUTABLE 'blastp'
-BLASTN_EXECUTABLE 'blastn'
+FORMATDB_EXECUTABLE ''
+BLASTP_EXECUTABLE ''
+BLASTN_EXECUTABLE ''
 EXECUTABLES_DIR 'executables/linux'
 LASTDB_EXECUTABLE 'fastdb'
 LAST_EXECUTABLE 'fastal'
