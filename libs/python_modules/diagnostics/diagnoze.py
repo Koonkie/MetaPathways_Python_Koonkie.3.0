@@ -66,7 +66,6 @@ def staticDiagnose(configs, params, logger = None ):
     if not checkForRequiredDatabases(tools, params, configs, 'functional',  logger = logger):
         return False
         
-
     if not checkForRequiredDatabases(tools, params, configs, 'taxonomic',  logger = logger):
         return False
     
@@ -79,7 +78,7 @@ def staticDiagnose(configs, params, logger = None ):
     return True
 
 def checkbinaries(configs):
-
+  
     message = None
     executables_dir = "---"
     if "METAPATHWAYS_PATH" in configs:
@@ -99,8 +98,8 @@ def checkbinaries(configs):
     binaries = {}
     binaries["LASTDB_EXECUTABLE"] = ["-h"]
     binaries["LAST_EXECUTABLE"] = ["-h"]
-    binaries["FORMATDB_EXECUTABLE"] = ["-help" ]
 
+    binaries["FORMATDB_EXECUTABLE"] = ["-help" ]
     binaries["BLASTP_EXECUTABLE"] = ['-h' ] 
     binaries["BLASTN_EXECUTABLE"] = ['-h' ]
 
@@ -111,6 +110,10 @@ def checkbinaries(configs):
     status = {}
     error = False
     for name in binaries.keys():
+
+       if name in ["FORMATDB_EXECUTABLE", "BLASTP_EXECUTABLE", "BLASTN_EXECUTABLE"] and configs[name]=='':
+          continue
+
        if not name in configs : 
           status[name] = "BINARY UNSPECIFIED"
           error = True
@@ -233,22 +236,37 @@ def createMapFile(seqFilePath, dbMapFile):
       return True
 
 
-
 def formatDB(tools, db, refdbspath, seqType, dbType, algorithm, configs, logger = None):
      """ Formats the sequences for the specified algorithm """
      EXECUTABLES_DIR = configs['METAPATHWAYS_PATH'] + PATHDELIM + configs['EXECUTABLES_DIR'] 
      formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE']
      if seqType=='nucl':
-        if algorithm=='LAST':
+       if configs['FORMATDB_EXECUTABLE']:
+         if algorithm=='LAST':
             formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['LAST']['LASTDB_EXECUTABLE'] 
-        if algorithm=='BLAST':
+         if algorithm=='BLAST':
             formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE'] 
+       else:
+         if algorithm=='BLAST':
+            formatdb_executable = which('makeblastdb') 
+            if formatdb_executable==None:
+               return False
+         else:
+             return False
 
      if seqType=='prot':
-        if algorithm=='LAST':
-            formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['LAST']['LASTDB_EXECUTABLE']
-        if algorithm=='BLAST':
-            formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE']
+       if configs['FORMATDB_EXECUTABLE']:
+          if algorithm=='LAST':
+             formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['LAST']['LASTDB_EXECUTABLE']
+          if algorithm=='BLAST':
+             formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE']
+       else:
+          if algorithm=='BLAST':
+             formatdb_executable = which('makeblastdb') 
+             if formatdb_executable==None:
+                return False
+          else:
+             return False
 
      formatted_db = refdbspath + PATHDELIM + dbType + PATHDELIM + 'formatted'  + PATHDELIM + db
      raw_sequence_file = refdbspath + PATHDELIM + dbType + PATHDELIM + db
@@ -259,16 +277,21 @@ def formatDB(tools, db, refdbspath, seqType, dbType, algorithm, configs, logger 
      cmd = ""
      if algorithm=='BLAST':
          cmd='%s -dbtype %s -max_file_sz 2000000000  -in %s -out %s' %(formatdb_executable, seqType, raw_sequence_file, _temp_formatted_db)
-         print cmd
+         
          #cmd='%s -dbtype %s -max_file_sz 20267296  -in %s -out %s' %(formatdb_executable, seqType, raw_sequence_file, _temp_formatted_db)
+
+     formatted_db_size = 4000000000
+     if 'FORMATTED_DB_SIZE' in configs and configs['FORMATTED_DB_SIZE'].isdigit():
+       formatted_db_size = int(configs['FORMATTED_DB_SIZE'])
+
 
      if algorithm=='LAST':
          # dirname = os.path.dirname(raw_sequence_file)    
          cmd=""
          if seqType=="prot":
-            cmd='%s -s 4000M -p -c %s  %s' %(formatdb_executable, _temp_formatted_db, raw_sequence_file)
+            cmd='%s -s %s -p -c %s  %s' %(formatdb_executable, formatted_db_size, _temp_formatted_db, raw_sequence_file)
          if seqType=="nucl":
-            cmd='%s -s 4000M -c %s  %s' %(formatdb_executable, _temp_formatted_db, raw_sequence_file)
+            cmd='%s -s %s -c %s  %s' %(formatdb_executable, formatted_db_size,  _temp_formatted_db, raw_sequence_file)
 
          eprintf("INFO\tCommand to format \"%s\"\n", cmd)
          logger.printf("INFO\tCommand to format \"%s\"\n", cmd)
@@ -465,6 +488,8 @@ def executablesExist( executables, configs, logger = None ):
 
       if name=='PATHOLOGIC_EXECUTABLE' and  path.exists(script):
            #print "FIX ME: diagnoze"
+           eprintf("ERROR\tif you do not wish to install the Pathway-Tools and  run the ePGDB building step \n" + 
+                       "\tyou might want to create the place holder file by using the \"touch %s\" (%s) \n",script, name)
            continue
 
       

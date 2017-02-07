@@ -202,6 +202,7 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
      else:
         prefix = sample_name + '_'
 
+     countError = 0
      for key in contig_dict:
         first = True
         if count %10000 == 0:
@@ -275,9 +276,13 @@ def  write_ptinput_files(output_dir_name, contig_dict, sample_name, nucleotide_s
         #write the sequence now only once per contig
         try:
            contig_seq =  nucleotide_seq_dict[key]
-           
         except:
-           printf("ERROR: Contig %s missing file in \"preprocessed\" folder for sample\n", key)
+           #print nucleotide_seq_dict.keys()[0]
+           if countError < 10:
+              printf("ERROR: Contig %s missing file in \"preprocessed\" folder for sample\n", key)
+              countError += 1
+              if countError == 10:
+                printf("...................................................................\n")
            continue
 
         fastaStr=wrap("",0,62, contig_seq)

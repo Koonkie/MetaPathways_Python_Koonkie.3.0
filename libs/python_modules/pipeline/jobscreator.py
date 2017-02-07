@@ -311,7 +311,7 @@ class ContextCreator:
                     "--prod_f", "gff",
                     "--prod_g", translation_table,
                     "--prod_input", context.inputs['input_file'],
-                    "--prod_output", context.outputs['output_gff'], "--strand",  strand
+                    "--prod_output", context.outputs['output_gff'], #"--strand",  strand
                 ]
 
           context.commands = [ ' '.join(cmd)]
@@ -458,8 +458,11 @@ class ContextCreator:
               cmd = None
               if s.algorithm == 'BLAST':
                  pyScript      = self.configs.METAPATHWAYS_PATH + PATHDELIM +  self.configs.FUNC_SEARCH
-                 searchExec =   self.configs.METAPATHWAYS_PATH + PATHDELIM + self.configs.EXECUTABLES_DIR +\
-                                 PATHDELIM + self.configs.BLASTP_EXECUTABLE
+
+                 searchExec =   self.configs.BLASTP_EXECUTABLE
+                 if not path.exists(self.configs.BLASTP_EXECUTABLE):
+                     searchExec =   self.configs.METAPATHWAYS_PATH + PATHDELIM + self.configs.EXECUTABLES_DIR +\
+                                    PATHDELIM + self.configs.BLASTP_EXECUTABLE
 
                  cmd= ("%s "
                        "--algorithm %s "
@@ -1333,8 +1336,29 @@ class ContextCreator:
            for item in items:
                #print item,  getattr(self.configs, item, False) 
                if not hasattr(self.configs, item) or not getattr(self.configs, item, False) :
-                  print "ERROR: Missing configuration parameter %s in config file" %(item)
-                  error =True
+
+                  if item in ["FORMATDB_EXECUTABLE"]:
+                     executable = which('makeblastdb') 
+                     if executable==None:
+                        return False
+                     else:
+                        setattr(self.configs, item, executable)
+
+                  elif item in ["BLASTP_EXECUTABLE"]:
+                     executable = which('blastp') 
+                     if executable==None:
+                        return False
+                     else:
+                        setattr(self.configs, item, executable)
+                  elif item in [ "BLASTN_EXECUTABLE"]:
+                     executable = which('blastn') 
+                     if executable==None:
+                        return False
+                     else:
+                        setattr(self.configs, item, executable)
+                  else:
+                     print "ERROR: Missing configuration parameter %s in config file" %(item)
+                     error =True
 
 
            return error

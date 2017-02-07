@@ -113,7 +113,7 @@ def execute_tasks(s, verbose = False, block = 0):
                   s.stepslogger.write('%s\t%s\n' %( c.name, "SUCCESS"))
                else:
                   eprintf('..... Failed!\n')
-                  eprintf('ERROR: %s\n',  result )
+                 # eprintf('%s result \n',  result )
                   s.stepslogger.write('%s\t%s\n' %( c.name, "FAILED"))
             else:
                eprintf('..... Skipping [NO INPUT]!\n')
@@ -139,7 +139,6 @@ def execute_tasks(s, verbose = False, block = 0):
                      eprintf('..... Success!\n')
                      s.stepslogger.write('%s\t%s\n' %( c.name, "SUCCESS"))
                   else:
-                     eprintf('ERROR: %s\n',  result )
                      eprintf('..... Failed!\n')
                      s.stepslogger.write('%s\t%s\n' %( c.name, "FAILED"))
                else:

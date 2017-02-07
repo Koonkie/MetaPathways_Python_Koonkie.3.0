@@ -33,8 +33,8 @@ annotation:algorithm BLAST
 # e.g. blast or last
 
 # e.g. annotation:dbs    cog,kegg,refseq,metacyc
-#annotation:dbs COG-14-2016-10-20,kegg-uniprot-2016-10-20, metacyc-2016-10-31
-annotation:dbs AR-polypeptides_2016-03-16.fasta, COG_2013-12-27  merops_pepunit_v9-12_nohyphen.fasta  tcdb_2016-03-16.fasta uniprot_sprot_2016_02.fasta,CAZY_2014-09-04_from-MP.fasta  metacyc-v5-2011-10-21 uniprot-seq-ids-reduced-100.fasta, VFDB_setA_pro.fas   
+#annotation:dbs card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31, refseq-2016-10-06-rel-78
+annotation:dbs card, cazydb, tcdb, merops, VFDB, metacyc-2016-10-31
 
 annotation:min_bsr 0.4
 annotation:max_evalue 0.000001
@@ -43,7 +43,8 @@ annotation:min_length 45
 annotation:max_hits 5
 
 # rRNA annotation parameters LSURef_115_tax_silva
-rRNA:refdbs LSURef_115_tax_silva_2013-12-12
+#rRNA:refdbs SILVA_128_SSURef_tax_silva,SILVA_128_LSURef_tax_silva, GREENGENES_gg16S_13_5
+rRNA:refdbs SILVA_128_SSURef_tax_silva
 
 rRNA:max_evalue 0.000001
 rRNA:min_identity 20
@@ -54,14 +55,14 @@ ptools_settings:taxonomic_pruning no
 
 
 # pipeline execution flags
-# e.g. yes, skip, redo
-metapaths_steps:PREPROCESS_INPUT yes
-metapaths_steps:ORF_PREDICTION yes
-metapaths_steps:FILTER_AMINOS yes
-metapaths_steps:FUNC_SEARCH yes
-metapaths_steps:PARSE_FUNC_SEARCH yes
-metapaths_steps:SCAN_rRNA yes
-metapaths_steps:SCAN_tRNA yes
-metapaths_steps:ANNOTATE_ORFS yes
+# e.g. redo, skip, redo
+metapaths_steps:PREPROCESS_INPUT redo
+metapaths_steps:ORF_PREDICTION redo
+metapaths_steps:FILTER_AMINOS redo
+metapaths_steps:FUNC_SEARCH redo
+metapaths_steps:PARSE_FUNC_SEARCH redo
+metapaths_steps:SCAN_rRNA redo
+metapaths_steps:SCAN_tRNA redo
+metapaths_steps:ANNOTATE_ORFS redo
 metapaths_steps:BUILD_PGDB skip
-metapaths_steps:COMPUTE_RPKM yes
+metapaths_steps:COMPUTE_RPKM redo

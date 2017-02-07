@@ -25,7 +25,6 @@ annotation:algorithm LAST
 # e.g. blast or last
 
 # e.g. annotation:dbs    cog,kegg,refseq,metacyc
-#annotation:dbs COG-14-2016-10-20,kegg-uniprot-2016-10-20, metacyc-2016-10-31
 annotation:dbs card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31, refseq-2016-10-06-rel-78
 annotation:min_bsr 0.4
 annotation:max_evalue 0.000001
@@ -34,7 +33,8 @@ annotation:min_length 45
 annotation:max_hits 5
 
 # rRNA annotation parameters LSURef_115_tax_silva
-rRNA:refdbs SILVA_123_1_SSURef_tax_silva,SILVA_123_1_LSURef_tax_silva, GREENGENES_gg16S_13_5
+rRNA:refdbs SILVA_128_SSURef_tax_silva,SILVA_128_LSURef_tax_silva, GREENGENES_gg16S_13_5
+
 
 rRNA:max_evalue 0.000001
 rRNA:min_identity 20
