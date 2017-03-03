@@ -21,12 +21,29 @@ from datetime import datetime
 from optparse import OptionParser
 import sys, os, traceback, math, re, time
 from libs.python_modules.utils.utils import *
+from libs.python_modules.utils.errorcodes import error_message, get_error_list, insert_error
 
 
 
 
-def halt_process(secs=4):
+def halt_process(secs=4, verbose =False):
     time.sleep(secs)
+
+    errors=get_error_list()
+    if len(errors)>1:
+       insert_error(200)
+
+    if verbose:
+      for errorcode in errors.keys():
+         eprintf("ERROR:\t%d\t%s\n",errorcode, errors[errorcode])
+      
+    if len(errors.keys())>1:
+        errorcode = 200
+        _exit(errorcode)
+    elif len(errors.keys())==1:
+        errorcode = errors.keys()[0]
+        _exit(errorcode)
+
     _exit(0)
 
 def exit_process(message = None, delay = 0, logger = None):

@@ -518,6 +518,7 @@ def main(argv):
     eprintf("             THE END                   \n")
     eprintf("            ***********                \n")
     #halt_process(opts.delay)
+    halt_process(1, verbose=opts.verbose)
 
 # the main function of metapaths
 if __name__ == "__main__":

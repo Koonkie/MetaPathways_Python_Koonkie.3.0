@@ -12,6 +12,7 @@ try:
    from libs.python_modules.utils.sysutil import getstatusoutput
 
    from libs.python_modules.utils.pathwaytoolsutils import *
+   from libs.python_modules.utils.errorcodes import error_message, get_error_list, insert_error
 
 except:
      print """ Could not load some user defined  module functions"""
@@ -131,7 +132,6 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
         #exit_process("ERROR\tUnrecognized algorithm name for FUNC_SEARCH\n")
         return -1
 
-
     if code != 0:
         a= '\nERROR\tCannot successfully execute the %s for FUNC_SEARCH\n' %(options.algorithm)
         b ='ERROR\t%s\n' % (message) 
@@ -178,6 +178,7 @@ def  _execute_LAST(options, logger = None):
     if options.last_query:
        args += [ options.last_query ]
 
+    result =None
     try:
        result = getstatusoutput(' '.join(args) )
        rename(options.last_o + ".tmp", options.last_o) 
@@ -233,8 +234,13 @@ def MetaPathways_func_search(argv, extra_command = None, errorlogger = None, run
     if errorlogger != None:
        errorlogger.write("#STEP\tFUNC_SEARCH\n")
     createParser()
-    code = main(argv, errorlogger = errorlogger, runcommand= extra_command, runstatslogger = runstatslogger)
-    return (code,'')
+    try:
+       code = main(argv, errorlogger = errorlogger, runcommand= extra_command, runstatslogger = runstatslogger)
+    except:
+       insert_error(4)
+       return (0,'')
+
+    return (0,'')
 
 if __name__ == '__main__':
     createParser()

@@ -1379,7 +1379,12 @@ def print_orf_table(results, orfToContig,  output_dir,  outputfile, compact_outp
 def MetaPathways_create_reports_fast(argv, errorlogger =  None, runstatslogger = None):
     createParser()
     errorlogger.write("#STEP\tCREATE_ANNOT_REPORTS\n")
-    main(argv,errorlogger= errorlogger, runstatslogger = runstatslogger )
+    try:
+       main(argv,errorlogger= errorlogger, runstatslogger = runstatslogger )
+    except:
+       insert_error(16)
+       return (0,'')
+    
     return (0,'')
 
 # the main function of metapaths

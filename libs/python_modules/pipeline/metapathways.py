@@ -249,7 +249,7 @@ def check_config_settings(config_settings, file, globalerrorlogger = None):
 
             if globalerrorlogger!=None:
                globalerrorlogger.write("ERROR\tPath for \"%s\" is NOT set properly (or missing) in configuration file \"%s\"\n"  %(key, file))  
-               globalerrorlogger.write("       Currently it is set to \"%s\"\n" %(config_settings[key] )  )
+               globalerrorlogger.write("       Currently it is set to \"%s\". Please correct it and try again.\n" %(config_settings[key] )  )
             missingItems.append(key) 
          continue
 
@@ -261,7 +261,7 @@ def check_config_settings(config_settings, file, globalerrorlogger = None):
             eprintf("ERROR: 2.Currently it is set to \"%s\"\n", config_settings[key] )  
             if globalerrorlogger!=None:
                 globalerrorlogger.write("ERROR\tPath for \"%s\" is NOT set properly (or missing) in configuration file \"%s\"\n" %(key,file))
-                globalerrorlogger.write("Currently it is set to \"%s\"\n" %( config_settings[key]) )  
+                globalerrorlogger.write("Currently it is set to \"%s\". Please correct it and try again.\n" %( config_settings[key]) )  
             missingItems.append(key) 
          continue
 
@@ -272,7 +272,7 @@ def check_config_settings(config_settings, file, globalerrorlogger = None):
             eprintf("ERROR: 3.Currently it is set to \"%s\"\n", config_settings[key] )  
             if globalerrorlogger!=None:
                globalerrorlogger.write("ERROR\tPath for \"%s\" is NOT set properly (or missing) in configuration file \"%s\"\n" %(key, file))  
-               globalerrorlogger.write("Currently it is set to \"%s\"\n" %( config_settings[key] )) 
+               globalerrorlogger.write("Currently it is set to \"%s\". Please correct the path.\n" %( config_settings[key] )) 
             missingItems.append(key) 
          continue
 
@@ -282,7 +282,7 @@ def check_config_settings(config_settings, file, globalerrorlogger = None):
             eprintf("ERROR: 7.Currently it is set to \"%s\"\n", config_settings['REFDBS'] + PATHDELIM + 'ncbi_tree' + PATHDELIM +config_settings[key] )  
             if globalerrorlogger!=None:
                globalerrorlogger.write("ERROR\tPath for \"%s\" is NOT set properly (or missing) in configuration file \"%s\"\n" %(key, file))  
-               globalerrorlogger.write("Currently it is set to \"%s\"\n" %( config_settings[key] )) 
+               globalerrorlogger.write("Currently it is set to \"%s\". Please correct the path to compute LCA with accession id translation.\n" %( config_settings[key] )) 
             missingItems.append(key) 
          continue
 

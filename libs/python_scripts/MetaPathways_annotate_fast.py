@@ -19,6 +19,7 @@ try:
     from libs.python_modules.utils.metapathways_utils  import strip_taxonomy, ShortenrRNAId, ShortenORFId, ShortenContigId, ContigID
     from libs.python_modules.utils.sysutil import getstatusoutput
     from libs.python_modules.utils.utils  import doesFileExist
+    from libs.python_modules.utils.errorcodes import error_message, get_error_list, insert_error
 
 except:
     print """ Could not load some user defined  module functions"""
@@ -977,7 +978,13 @@ def main(argv, errorlogger =None, runstatslogger = None):
 def MetaPathways_annotate_fast(argv, errorlogger = None, runstatslogger = None):       
     createParser()
     errorlogger.write("#STEP\tANNOTATE_ORFS\n")
-    main(argv, errorlogger = errorlogger, runstatslogger = runstatslogger)
+    try:
+       main(argv, errorlogger = errorlogger, runstatslogger = runstatslogger)
+    except:
+       insert_error(8)
+       return (0,'')
+
+
     return (0,'')
 
 # the main function of metapaths
