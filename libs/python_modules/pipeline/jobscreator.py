@@ -436,7 +436,15 @@ class ContextCreator:
       
           num_threads = self.configs.NUM_CPUS
 
-          dbstring =  self.params.get('annotation', 'dbs', default=None)
+          dbtype = self.params.get('annotation', 'dbtype', default='high')
+
+          dbstring ="" 
+          if dbtype=='high':
+             dbstring =  self.params.get('annotation', 'dbs_high', default='')
+          else:
+             dbstring =  self.params.get('annotation', 'dbs', default='')
+
+
           dbs= [x.strip() for x in dbstring.split(",")  if len(x)!=0 ]
       
           

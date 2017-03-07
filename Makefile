@@ -22,12 +22,12 @@ FAST=$(BINARY_FOLDER)/fastal
 PRODIGAL=$(BINARY_FOLDER)/prodigal
 
 MICROBE_CENSUS=microbe_census
-METAPATHWAYS_DB=MetaPathways_DBs
-METAPATHWAYS_DB_TAR=Metapathways_DBs_2016-04.tar.xz
+METAPATHWAYS_DB=../fogdogdatabases
+#METAPATHWAYS_DB_TAR=Metapathways_DBs_2016-04.tar.xz
 
 GIT_SUBMODULE_UPDATE=gitupdate
 
-all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) $(METAPATHWAYS_DB)
+all: $(METAPATHWAYS_DB) $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) 
 
 ## Alias for target 'all', for compliance with FogDog deliverables standard:
 install: all
@@ -94,13 +94,17 @@ $(MICROBE_CENSUS):
 	sudo python setup.py install
 
 
-$(METAPATHWAYS_DB_TAR):
-	@echo  "Fetching the databases...." 
-	aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz .
+$(METAPATHWAYS_DB):
+	@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB)...." 
+	#aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz .
 
-$(METAPATHWAYS_DB): $(METAPATHWAYS_DB_TAR)
-	@echo  "Unzipping the database...." 
-	tar -xvJf Metapathways_DBs_2016-04.tar.xz
+	@if [ ! -d $(METAPATHWAYS_DB) ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB)/; fi
+
+	@echo  "Downloaded" 
+#$(METAPATHWAYS_DB): $(METAPATHWAYS_DB_TAR)
+	#@echo  "Unzipping the database...." 
+	#tar -xvJf Metapathways_DBs_2016-04.tar.xz
+	#@echo  "Downloaded" 
 
 
 $(BINARY_FOLDER): 

@@ -239,13 +239,13 @@ def createMapFile(seqFilePath, dbMapFile):
 def formatDB(tools, db, refdbspath, seqType, dbType, algorithm, configs, logger = None):
      """ Formats the sequences for the specified algorithm """
      EXECUTABLES_DIR = configs['METAPATHWAYS_PATH'] + PATHDELIM + configs['EXECUTABLES_DIR'] 
-     formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE']
+     formatdb_executable = '' #EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE']
      if seqType=='nucl':
        if configs['FORMATDB_EXECUTABLE']:
          if algorithm=='LAST':
             formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['LAST']['LASTDB_EXECUTABLE'] 
          if algorithm=='BLAST':
-            formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE'] 
+            formatdb_executable = which('blastn') #EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE'] 
        else:
          if algorithm=='BLAST':
             formatdb_executable = which('makeblastdb') 
@@ -259,7 +259,7 @@ def formatDB(tools, db, refdbspath, seqType, dbType, algorithm, configs, logger 
           if algorithm=='LAST':
              formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['LAST']['LASTDB_EXECUTABLE']
           if algorithm=='BLAST':
-             formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE']
+             formatdb_executable = which('blastp') # EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE']
        else:
           if algorithm=='BLAST':
              formatdb_executable = which('makeblastdb') 
@@ -378,6 +378,7 @@ def isDBformatted(db, refdbspath, dbType, seqType,  algorithm, logger = None):
        fileList = []
        tempFilePattern = re.compile(r''+ dbname + '[.\d]*.' + suffix +'$');
 
+    
        for aFile in allfileList:
            searchResult =  tempFilePattern.search(aFile)
            if searchResult:

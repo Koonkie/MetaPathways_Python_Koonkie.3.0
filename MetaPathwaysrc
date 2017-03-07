@@ -16,17 +16,6 @@ fi
 
 echo ""
 
-PERL_LOC=`which perl`
-if [ ! -e $PERL_LOC ] 
-then
-   echo "ERROR:"
-   echo "You do not seem to have Perl installed."
-   echo "Please install it or make sure it is added to your unix PATH variable."
-else
-   echo "Perl found in  ${PERL_LOC}"
-   echo "Please set variable PERL_EXECUTABLE in file template_config.txt as:"
-   echo "PERL_EXECUTABLE  ${PERL_LOC}" 
-fi
 echo ""
 echo "Adding installation folder of MetaPathways to PYTHONPATH"
 echo "Your MetaPathways is installed in :"

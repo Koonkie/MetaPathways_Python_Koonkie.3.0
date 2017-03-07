@@ -161,10 +161,45 @@ class SampleData():
 
 
     def _createLogFiles(self):
-        self.runlogger = WorkflowLogger(generate_log_fp(self.output_dir, basefile_name='metapathways_run_log'), open_mode='a')
+        self.runlogger = WorkflowLogger(generate_log_fp(self.output_dir, basefile_name='metapathways_run_log'), open_mode='w')
         self.stepslogger = WorkflowLogger(generate_log_fp(self.output_dir, basefile_name='metapathways_steps_log'),open_mode='a')
         self.errorlogger = WorkflowLogger(generate_log_fp(self.output_dir, basefile_name='errors_warnings_log'),open_mode='a')
         self.runstatslogger = WorkflowLogger(generate_log_fp(self.output_run_statistics_dir,  basefile_name = self.sample_name + '.run.stats'),open_mode='a')
+
+    def writeParamsToRunLogs(self, params):
+        print params
+
+        param_values = [
+               ["quality_control", "min_length",  "180"], 
+               ["quality_control", "delete_replicates", "yes"], 
+               ["orf_prediction", "strand",  "both"], 
+               ["orf_prediction", "algorithm", "prodigal"], 
+               ["orf_prediction", "min_length", "60"], 
+               ["orf_prediction", "translation_table", "11"], 
+               ["orf_prediction", "mode", "meta"], 
+               ["annotation", "algorithm", "BLAST"], 
+               ["annotation", "dbshigh", "card, tcdb, metacyc-2016-10-31"], 
+               ["annotation", "dbs", "card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31"], 
+               ["annotation", "dbtype",  "high"], 
+               ["annotation", "min_bsr", "0.4"], 
+               ["annotation", "max_evalue",  "0.000001"], 
+               ["annotation", "min_score", "20"], 
+               ["annotation", "min_length", "45"], 
+               ["annotation", "max_hits", "5"], 
+               ["rRNA", "refdbs", "SILVA_128_SSURef_tax_silva,SILVA_128_LSURef_tax_silva, GREENGENES_gg16S_13_5"], 
+               ["rRNA", "max_evalue", "0.000001"], 
+               ["rRNA", "min_identity", "20"], 
+               ["rRNA", "min_bitscore",  "50"], 
+               ["ptools_settings", "taxonomic_pruning",  "no"], 
+               ["ptools_input", "compact_mode",  "yes"],
+ 
+        ]
+        for parameter in param_values:
+           print parameter
+           value = params.get(parameter[0], parameter[1], default=parameter[2])
+           self.runlogger.printf("%s:%s\t%s\n", parameter[0], parameter[1], value);
+
+
 
     def _createFolders(self):
         checkOrCreateFolder(self.preprocessed_dir)

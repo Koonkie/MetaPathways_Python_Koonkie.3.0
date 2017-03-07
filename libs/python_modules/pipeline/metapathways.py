@@ -506,6 +506,7 @@ def run_metapathways(samplesData, output_dir, all_samples_output_dir, globallogg
       s =  samplesData[input_file]
       jobcreator.addJobs(s, block_mode = block_mode)
 
+    _params = Singleton(Params)(params)
 
     if block_mode:
        eprintf("==============  RUNNING STEPS IN BLOCK 0 ================\n")
@@ -515,6 +516,7 @@ def run_metapathways(samplesData, output_dir, all_samples_output_dir, globallogg
          sample_name_banner = "PROCESSING INPUT " + input_file
          eprintf('\n'+ '#'*len(sample_name_banner) + "\n")
          eprintf( '\n' + sample_name_banner +  ' [STEPS BLOCK 0] ' + '\n')
+         s.writeParamsToRunLogs(_params)
          try:
             pass
             execute_tasks(s, verbose = command_line_params['verbose'], block = 0)    
