@@ -4,7 +4,13 @@ LEX=lex
 LEXFLAGS=-lfl
 CFLAGS=-C
 
-
+#example: 
+#     a) make install METAPATHWAYS_DB=../ 
+#     this will get the files uploaded by wholebiome into the path in METAPATHWAYS_DB
+#
+#     b) make install 
+#     this will get the files uploaded by koonkie into the path in METAPATHWAYS_DB_DEFAULT (see below)
+#
 
 OS_PLATFORM=linux
 #should be the same as the EXECUTABLES_DIR in the template_config.txt file
@@ -22,20 +28,40 @@ FAST=$(BINARY_FOLDER)/fastal
 PRODIGAL=$(BINARY_FOLDER)/prodigal
 
 MICROBE_CENSUS=microbe_census
-METAPATHWAYS_DB=../fogdogdatabases
-#METAPATHWAYS_DB_TAR=Metapathways_DBs_2016-04.tar.xz
+METAPATHWAYS_DB_DEFAULT=../fogdogdatabases
+METAPATHWAYS_DB_TAR=Metapathways_DBs_2016-04.tar.xz
+
+
 
 GIT_SUBMODULE_UPDATE=gitupdate
 
-all: $(METAPATHWAYS_DB) $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) 
-
 ## Alias for target 'all', for compliance with FogDog deliverables standard:
+all:  METAPATHWAYS_DB_FETCH
+
 install: all
 
+#all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) 
 
-.PHONY: $(GIT_SUBMODULE_UPDATE) all install test test-microbe-census
+#install: all
+
+.PHONY: METAPATHWAYS_DB_FETCH
+METAPATHWAYS_DB_FETCH:
+ifdef METAPATHWAYS_DB
+	@echo  "Fetching the databases...." 
+	aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz .
+
+	@echo  "Unzipping the database...." 
+	@if [ ! -d $(METAPATHWAYS_DB) ]; then  mkdir $(METAPATHWAYS_DB); fi
+	tar -xvJf Metapathways_DBs_2016-04.tar.xz  --directory $(METAPATHWAYS_DB)
+else
+	@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB_DEFAULT)...." 
+	@if [ ! -d $(METAPATHWAYS_DB_DEFAULT) ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB_DEFAULT)/; fi
+	@echo  "Downloaded" 
+endif
 
 
+#.PHONY: $(GIT_SUBMODULE_UPDATE) all install test test-microbe-census
+.PHONY: $(GIT_SUBMODULE_UPDATE) 
 $(GIT_SUBMODULE_UPDATE):
 	@echo git submodule update  trnascan
 	git submodule update  --init executables/source/trnascan 
@@ -94,17 +120,20 @@ $(MICROBE_CENSUS):
 	sudo python setup.py install
 
 
-$(METAPATHWAYS_DB):
+$(METAPATHWAYS_DB_DEFAULT):
 	@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB)...." 
-	#aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz .
-
 	@if [ ! -d $(METAPATHWAYS_DB) ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB)/; fi
-
 	@echo  "Downloaded" 
-#$(METAPATHWAYS_DB): $(METAPATHWAYS_DB_TAR)
-	#@echo  "Unzipping the database...." 
-	#tar -xvJf Metapathways_DBs_2016-04.tar.xz
-	#@echo  "Downloaded" 
+
+$(METAPATHWAYS_DB_TAR):
+	@echo  "Fetching the databases...." 
+	aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz .
+
+$(METAPATHWAYS_DB): $(METAPATHWAYS_DB_TAR)
+	@echo  "Unzipping the database...." 
+	tar -xvJf Metapathways_DBs_2016-04.tar.xz
+
+
 
 
 $(BINARY_FOLDER): 
