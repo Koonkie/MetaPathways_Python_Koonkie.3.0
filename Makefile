@@ -121,7 +121,7 @@ $(MICROBE_CENSUS):
 $(METAPATHWAYS_DB_DEFAULT):
 	@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB)...." 
 	@if [ ! -d $(METAPATHWAYS_DB) ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB)/; fi
-	@echo  "Downloaded" 
+#	@echo  "Downloaded" 
 
 $(METAPATHWAYS_DB_TAR):
 	@echo  "Fetching the databases...." 
