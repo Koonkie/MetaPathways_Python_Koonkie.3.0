@@ -36,11 +36,9 @@ METAPATHWAYS_DB_TAR=Metapathways_DBs_2016-04.tar.xz
 GIT_SUBMODULE_UPDATE=gitupdate
 
 ## Alias for target 'all', for compliance with FogDog deliverables standard:
-all:  METAPATHWAYS_DB_FETCH
+all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) METAPATHWAYS_DB_FETCH
 
 install: all
-
-#all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) 
 
 #install: all
 
