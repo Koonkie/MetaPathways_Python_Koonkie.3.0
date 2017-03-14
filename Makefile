@@ -41,8 +41,12 @@ all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRN
 install: all
 
 .PHONY: PTOOLS_INSTALL
-PTOOLS_INSTALL:
-	tar -xvJf ptools.tar.gz --directory ./ptools-files
+PTOOLS_INSTALL:  ptools.tar.gz
+	@if [ ! -d ./ptools-files ]; then \
+		mkdir ./ptools-files; \
+		tar -zxvf ptools.tar.gz --directory ./ptools-files; \
+		sudo make -C ./ptools-files; \
+	fi
 
 
 .PHONY: METAPATHWAYS_DB_FETCH
