@@ -1034,7 +1034,7 @@ def main(argv, errorlogger = None,  runstatslogger = None):
 
     start = 0
     Length = len(listOfOrfs)
-    _stride = 100000
+    _stride = 5000000
     Taxons = {}
     while start < Length:
        pickorfs= {}
