@@ -153,10 +153,19 @@ def checkForRequiredDatabases(tools, params, configs, dbType, logger =None):
           -- formats if necessary 
     """
     
-    if dbType=='functional':
-       dbstring = get_parameter(params, 'annotation', 'dbs', default=None)
-       _algorithm = get_parameter(params, 'annotation', 'algorithm', default=None)
 
+
+
+    if dbType=='functional':
+       dbtype = get_parameter(params, 'annotation', 'dbtype', default='high')
+       dbstring ="" 
+       if dbtype=='high':
+          dbstring =  get_parameter(params, 'annotation', 'dbs_high', default='')
+       elif dbtype=='custom':
+          dbstring =  get_parameter(params, 'annotation', 'dbs_custom', default='')
+       elif dbtype=='all':
+          dbstring =  get_parameter(params, 'annotation', 'dbs', default='')
+       _algorithm = get_parameter(params, 'annotation', 'algorithm', default=None)
 
     if dbType=='taxonomic':
        dbstring = get_parameter(params, 'rRNA', 'refdbs', default=None)

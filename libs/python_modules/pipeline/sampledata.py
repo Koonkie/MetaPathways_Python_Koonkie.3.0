@@ -178,8 +178,9 @@ class SampleData():
                ["orf_prediction", "translation_table", "11"], 
                ["orf_prediction", "mode", "meta"], 
                ["annotation", "algorithm", "BLAST"], 
-               ["annotation", "dbshigh", "card, tcdb, metacyc-2016-10-31"], 
-               ["annotation", "dbs", "card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31"], 
+               ["annotation", "dbs_high", ""], 
+               ["annotation", "dbs_custom", ""], 
+               ["annotation", "dbs", ""], 
                ["annotation", "dbtype",  "high"], 
                ["annotation", "min_bsr", "0.4"], 
                ["annotation", "max_evalue",  "0.000001"], 
@@ -195,11 +196,11 @@ class SampleData():
  
         ]
         for parameter in param_values:
-           print parameter
            value = params.get(parameter[0], parameter[1], default=parameter[2])
            self.runlogger.printf("%s:%s\t%s\n", parameter[0], parameter[1], value);
 
 
+     
 
     def _createFolders(self):
         checkOrCreateFolder(self.preprocessed_dir)

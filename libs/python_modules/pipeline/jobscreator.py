@@ -92,6 +92,11 @@ class Params:
 
           return self.params[key1][key2]
 
+      def print_key_values(self):
+          print self.params
+       
+
+
 @Singleton
 class Configs:
 
@@ -424,6 +429,18 @@ class ContextCreator:
           contexts.append(context)
           return contexts
              
+      def get_dbstring(self) :
+          dbtype = self.params.get('annotation', 'dbtype', default='high')
+          dbstring ="" 
+          if dbtype=='high':
+             dbstring =  self.params.get('annotation', 'dbs_high', default='')
+          elif dbtype=='custom':
+             dbstring =  self.params.get('annotation', 'dbs_custom', default='')
+          elif dbtype=='all':
+             dbstring =  self.params.get('annotation', 'dbs', default='')
+
+          return dbstring
+ 
       def create_blastp_against_refdb_cmd(self, s):
           """FUNC_SEARCH"""
           contexts = []
@@ -436,15 +453,7 @@ class ContextCreator:
       
           num_threads = self.configs.NUM_CPUS
 
-          dbtype = self.params.get('annotation', 'dbtype', default='high')
-
-          dbstring ="" 
-          if dbtype=='high':
-             dbstring =  self.params.get('annotation', 'dbs_high', default='')
-          else:
-             dbstring =  self.params.get('annotation', 'dbs', default='')
-
-
+          dbstring = self.get_dbstring()
           dbs= [x.strip() for x in dbstring.split(",")  if len(x)!=0 ]
       
           
@@ -541,7 +550,9 @@ class ContextCreator:
           min_score  = self.params.get('annotation', 'min_score', default=0.0)
           min_length = self.params.get('annotation', 'min_length', default=100)
           max_evalue = self.params.get('annotation', 'max_evalue', default=1000)
-          dbstring =   self.params.get('annotation', 'dbs', default=None)
+
+
+          dbstring = self.get_dbstring()
           dbs= [x.strip() for x in dbstring.split(",")  if len(x)!=0 ]
       
           pyScript = self.configs.METAPATHWAYS_PATH + self.configs.PARSE_FUNC_SEARCH
@@ -692,13 +703,11 @@ class ContextCreator:
           output_annotated_gff  = s.genbank_dir +PATHDELIM + s.sample_name+".annot.gff"
           output_comparative_annotation  =  s.output_results_annotation_table_dir\
                                               + PATHDELIM + s.sample_name
-          dbstring =   self.params.get('annotation', 'dbs', default=None)
+          dbstring = self.get_dbstring()
           refdbs= [x.strip() for x in dbstring.split(",")  if len(x)!=0 ]
 
           rRNAdbstring =   self.params.get('rRNA', 'refdbs', default=None)
           rRNAdbs= [x.strip() for x in rRNAdbstring.split(",")  if len(x)!=0 ]
-
-
 
           context = Context()
           context.name = 'ANNOTATE_ORFS'
@@ -916,7 +925,7 @@ class ContextCreator:
                          }
 
 
-          dbstring =   self.params.get('annotation', 'dbs', default=None)
+          dbstring = self.get_dbstring()
           refdbs= [x.strip() for x in dbstring.split(",")  if len(x)!=0 ]
 
           #db_argument_string = ''

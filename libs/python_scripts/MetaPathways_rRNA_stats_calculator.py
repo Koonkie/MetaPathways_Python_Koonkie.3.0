@@ -361,7 +361,6 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
 def runBlastCommandrRNA(runcommand = None):
     if runcommand == None:
       return False
-    print runcommand
     result = getstatusoutput(runcommand)
 
     return result[0]
