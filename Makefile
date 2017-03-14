@@ -45,16 +45,16 @@ install: all
 .PHONY: METAPATHWAYS_DB_FETCH
 METAPATHWAYS_DB_FETCH:
 ifdef METAPATHWAYS_DB
-	@echo  "Fetching the databases...." 
-	aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz .
-
-	@echo  "Unzipping the database...." 
 	@if [ ! -d $(METAPATHWAYS_DB) ]; then  mkdir $(METAPATHWAYS_DB); fi
-	tar -xvJf Metapathways_DBs_2016-04.tar.xz  --directory $(METAPATHWAYS_DB)
-else
-	@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB_DEFAULT)...." 
-	@if [ ! -d $(METAPATHWAYS_DB_DEFAULT) ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB_DEFAULT)/; fi
-	@echo  "Downloaded" 
+
+	@echo  "Fetching the databases...." 
+	@if [ ! -f $(METAPATHWAYS_DB)/Metapathways_DBs_2016-04.tar.xz ]; then aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz ${METAPATHWAYS_DB}/;  fi
+        
+	@echo  "Unzipping the database...." 
+	@if [ ! -d $(METAPATHWAYS_DB)/MetaPathways_DBs ]; then tar -xvJf ${METAPATHWAYS_DB}/Metapathways_DBs_2016-04.tar.xz  --directory $(METAPATHWAYS_DB); fi
+#@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB_DEFAULT)...." 
+#@if [ ! -d $(METAPATHWAYS_DB_DEFAULT) ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB_DEFAULT)/; fi
+#@echo  "Downloaded" 
 endif
 
 
@@ -122,6 +122,7 @@ $(METAPATHWAYS_DB_DEFAULT):
 	@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB)...." 
 	@if [ ! -d $(METAPATHWAYS_DB) ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB)/; fi
 #	@echo  "Downloaded" 
+
 
 $(METAPATHWAYS_DB_TAR):
 	@echo  "Fetching the databases...." 
