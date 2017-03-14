@@ -1074,7 +1074,10 @@ def create_metapaths_configuration(filename, folder):
                   default = folder + PATHDELIM
 
                if VARIABLE=='METAPATHWAYS_DB':
-                  default = os.environ['HOME'] + PATHDELIM + 'MetaPathways/databases/'
+                  if 'METAPATHWAYS' in os.environ:
+                     default = os.environ['METAPATHWAYS_DB'] + PATHDELIM + 'MetaPathways/databases/'
+                  else:
+                     eprintf("INFO: Set shell variable 'METAPATHWAYS'\n")
 
                line = line.replace('<' + VARIABLE + '>', default)
                eprintf("INFO: Setting default value for \"%s\" as \"%s\"" %( VARIABLE, default))

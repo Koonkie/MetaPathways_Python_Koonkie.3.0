@@ -25,11 +25,11 @@ annotation:algorithm BLAST
 # e.g. blast or last, for fogdob BLAST only
 
 # e.g. annotation:dbs    cog,kegg,refseq,metacyc
-annotation:dbshigh card, tcdb, metacyc-2016-10-31
-annotation:dbs card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31, refseq-2016-10-06-rel-78
-
+annotation:dbs_high card, tcdb, metacyc-2016-10-31
+#annotation:dbs_custom card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31, refseq-2016-10-06-rel-78
+#annotation:dbs AR-polypeptides_2016-03-16.fasta,  tcdb_2016-03-16.fasta, VFDB_setA_pro.fas, CAZY_2014-09-04_from-MP.fasta, merops_pepunit_v9-12_nohyphen.fasta, uniprot-seq-ids-reduced-100.fasta, COG_2013-12-27, metacyc-v5-2011-10-21, uniprot_sprot_2016_02.fasta 
 # high/all
-annotation:dbtype high
+annotation:dbtype all
 
 annotation:min_bsr 0.4
 annotation:max_evalue 0.000001

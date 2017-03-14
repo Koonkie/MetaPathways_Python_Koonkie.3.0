@@ -36,26 +36,25 @@ METAPATHWAYS_DB_TAR=Metapathways_DBs_2016-04.tar.xz
 GIT_SUBMODULE_UPDATE=gitupdate
 
 ## Alias for target 'all', for compliance with FogDog deliverables standard:
-all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) METAPATHWAYS_DB_FETCH
+all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) METAPATHWAYS_DB_FETCH PTOOLS_INSTALL
 
 install: all
 
-#install: all
+.PHONY: PTOOLS_INSTALL
+PTOOLS_INSTALL:
+	tar -xvJf ptools.tar.gz --directory ./ptools-files
+
 
 .PHONY: METAPATHWAYS_DB_FETCH
 METAPATHWAYS_DB_FETCH:
-ifdef METAPATHWAYS_DB
-	@if [ ! -d $(METAPATHWAYS_DB) ]; then  mkdir $(METAPATHWAYS_DB); fi
-
-	@echo  "Fetching the databases...." 
-	@if [ ! -f $(METAPATHWAYS_DB)/Metapathways_DBs_2016-04.tar.xz ]; then aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz ${METAPATHWAYS_DB}/;  fi
-        
-	@echo  "Unzipping the database...." 
-	@if [ ! -d $(METAPATHWAYS_DB)/MetaPathways_DBs ]; then tar -xvJf ${METAPATHWAYS_DB}/Metapathways_DBs_2016-04.tar.xz  --directory $(METAPATHWAYS_DB); fi
-#@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB_DEFAULT)...." 
-#@if [ ! -d $(METAPATHWAYS_DB_DEFAULT) ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB_DEFAULT)/; fi
-#@echo  "Downloaded" 
-endif
+	@if [ ! -d $(METAPATHWAYS_DB) ]; then \ 
+		mkdir $(METAPATHWAYS_DB); \
+		echo  "Fetching the databases...."  \
+		aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz ${METAPATHWAYS_DB}/; \
+		echo  "Unzipping the database...." 
+		tar -xvJf ${METAPATHWAYS_DB}/Metapathways_DBs_2016-04.tar.xz  --directory $(METAPATHWAYS_DB);  \
+		mv  ${METAPATHWAYS_DB}/MetaPathways_DBs/* $(METAPATHWAYS_DB)/;  \
+	fi
 
 
 #.PHONY: $(GIT_SUBMODULE_UPDATE) all install test test-microbe-census

@@ -378,7 +378,7 @@ def main(argv):
 
     if not path.exists(parameter_fp):
         eprintf("WARNING:\tNo parameters file %s found!\n" %(parameter_fp))
-        eprintf("INFO:\tCreating a parameters file %s found!\n" %(parameter_fp))
+        eprintf("INFO   :\tCreating a parameters file %s found!\n" %(parameter_fp))
         create_metapaths_parameters(parameter_fp, cmd_folder)
 
     params=parse_metapaths_parameters(parameter_fp)
