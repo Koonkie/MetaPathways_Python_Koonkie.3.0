@@ -206,10 +206,8 @@ def checkForRequiredDatabases(tools, params, configs, dbType, logger =None):
            """ is db formatted ? """
            if not isDBformatted(db, refdbspath, dbType, seqType,  algorithm, logger = logger):
               """ if note formatted then format it """
-              #eprintf("WARNING\tTrying to format %s  database %s for algorithm %s\n", seqType, sQuote(db), sQuote(algorithm) )
               eprintf("WARNING\tTrying to format %s  database %s\n", seqType, sQuote(db))
               logger.printf("WARNING\tTrying to format %s database %s \n", seqType,  sQuote(db) )
-              #logger.printf("WARNING\tTrying to format %s database %s for algorithm %s\n", seqType,  sQuote(db), sQuote(algorithm) )
 
               if not formatDB(tools, db, refdbspath, seqType, dbType, algorithm, configs, logger = logger):
                  return False
@@ -259,9 +257,12 @@ def formatDB(tools, db, refdbspath, seqType, dbType, algorithm, configs, logger 
             formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE'] 
         else:
             formatdb_executable = which('makeblastdb') 
+            if formatdb_executable==None:
+              eprintf("ERROR\tCannot find makeblastdb to format \"%s\"\n", db)
+              logger.printf("ERROR\tCannot find makeblastdb to format \"%s\"\n",db )
+              return False
 
-     if formatdb_executable==None:
-         return False
+
 
      formatted_db = refdbspath + PATHDELIM + dbType + PATHDELIM + 'formatted'  + PATHDELIM + db
      raw_sequence_file = refdbspath + PATHDELIM + dbType + PATHDELIM + db

@@ -51,6 +51,12 @@ PTOOLS_INSTALL:  ptools.tar.gz
 
 .PHONY: METAPATHWAYS_DB_FETCH
 METAPATHWAYS_DB_FETCH:
+	@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB)...." 
+	@if [ ! -d $(METAPATHWAYS_DB) ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB)/; fi
+
+
+
+NOT_USED:
 	@if [ ! -d $(METAPATHWAYS_DB) ]; then \ 
 		mkdir $(METAPATHWAYS_DB); \
 		echo  "Fetching the databases...."  \
@@ -119,12 +125,6 @@ $(MICROBE_CENSUS):
 	@echo  "Installing MicrobeCensus...." 
 	cd executables/source/MicrobeCensus/
 	sudo python setup.py install
-
-
-$(METAPATHWAYS_DB_DEFAULT):
-	@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB)...." 
-	@if [ ! -d $(METAPATHWAYS_DB) ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB)/; fi
-#	@echo  "Downloaded" 
 
 
 $(METAPATHWAYS_DB_TAR):

@@ -1357,6 +1357,8 @@ class ContextCreator:
                   if item in ["FORMATDB_EXECUTABLE"]:
                      executable = which('makeblastdb') 
                      if executable==None:
+                        eprintf("ERROR\tCannot find makeblastdb to format \"%s\"\n")
+                        logger.printf("ERROR\tCannot find makeblastdb to format \"%s\"\n")
                         return False
                      else:
                         setattr(self.configs, item, executable)
@@ -1364,12 +1366,16 @@ class ContextCreator:
                   elif item in ["BLASTP_EXECUTABLE"]:
                      executable = which('blastp') 
                      if executable==None:
+                        eprintf("ERROR\tCannot find blastp to format \"%s\"\n")
+                        logger.printf("ERROR\tCannot find blastp to format \"%s\"\n")
                         return False
                      else:
                         setattr(self.configs, item, executable)
                   elif item in [ "BLASTN_EXECUTABLE"]:
                      executable = which('blastn') 
                      if executable==None:
+                        eprintf("ERROR\tCannot find blastn to format \"%s\"\n")
+                        logger.printf("ERROR\tCannot find blastn to format \"%s\"\n")
                         return False
                      else:
                         setattr(self.configs, item, executable)
