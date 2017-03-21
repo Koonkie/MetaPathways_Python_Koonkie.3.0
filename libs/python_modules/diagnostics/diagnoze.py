@@ -206,8 +206,10 @@ def checkForRequiredDatabases(tools, params, configs, dbType, logger =None):
            """ is db formatted ? """
            if not isDBformatted(db, refdbspath, dbType, seqType,  algorithm, logger = logger):
               """ if note formatted then format it """
-              eprintf("WARNING\tTrying to format %s  database %s for algorithm %s\n", seqType, sQuote(db), sQuote(algorithm) )
-              logger.printf("WARNING\tTrying to format %s database %s for algorithm %s\n", seqType,  sQuote(db), sQuote(algorithm) )
+              #eprintf("WARNING\tTrying to format %s  database %s for algorithm %s\n", seqType, sQuote(db), sQuote(algorithm) )
+              eprintf("WARNING\tTrying to format %s  database %s\n", seqType, sQuote(db))
+              logger.printf("WARNING\tTrying to format %s database %s \n", seqType,  sQuote(db) )
+              #logger.printf("WARNING\tTrying to format %s database %s for algorithm %s\n", seqType,  sQuote(db), sQuote(algorithm) )
 
               if not formatDB(tools, db, refdbspath, seqType, dbType, algorithm, configs, logger = logger):
                  return False
@@ -249,33 +251,17 @@ def formatDB(tools, db, refdbspath, seqType, dbType, algorithm, configs, logger 
      """ Formats the sequences for the specified algorithm """
      EXECUTABLES_DIR = configs['METAPATHWAYS_PATH'] + PATHDELIM + configs['EXECUTABLES_DIR'] 
      formatdb_executable = '' #EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE']
-     if seqType=='nucl':
-       if configs['FORMATDB_EXECUTABLE']:
-         if algorithm=='LAST':
-            formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['LAST']['LASTDB_EXECUTABLE'] 
-         if algorithm=='BLAST':
-            formatdb_executable = which('blastn') #EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE'] 
-       else:
-         if algorithm=='BLAST':
-            formatdb_executable = which('makeblastdb') 
-            if formatdb_executable==None:
-               return False
-         else:
-             return False
+     if seqType == 'prot' and algorithm=='LAST':
+        formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['LAST']['LASTDB_EXECUTABLE'] 
 
-     if seqType=='prot':
-       if configs['FORMATDB_EXECUTABLE']:
-          if algorithm=='LAST':
-             formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['LAST']['LASTDB_EXECUTABLE']
-          if algorithm=='BLAST':
-             formatdb_executable = which('blastp') # EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE']
-       else:
-          if algorithm=='BLAST':
-             formatdb_executable = which('makeblastdb') 
-             if formatdb_executable==None:
-                return False
-          else:
-             return False
+     if seqType =='nucl' or algorithm=='BLAST':
+        if configs['FORMATDB_EXECUTABLE']:
+            formatdb_executable = EXECUTABLES_DIR + PATHDELIM + tools['FUNC_SEARCH']['exec']['BLAST']['FORMATDB_EXECUTABLE'] 
+        else:
+            formatdb_executable = which('makeblastdb') 
+
+     if formatdb_executable==None:
+         return False
 
      formatted_db = refdbspath + PATHDELIM + dbType + PATHDELIM + 'formatted'  + PATHDELIM + db
      raw_sequence_file = refdbspath + PATHDELIM + dbType + PATHDELIM + db
@@ -284,8 +270,9 @@ def formatDB(tools, db, refdbspath, seqType, dbType, algorithm, configs, logger 
 
      """ format with 4GB file size """
      cmd = ""
-     if algorithm=='BLAST':
+     if seqType =='nucl' or algorithm=='BLAST':
          cmd='%s -dbtype %s -max_file_sz 2000000000  -in %s -out %s' %(formatdb_executable, seqType, raw_sequence_file, _temp_formatted_db)
+ 
          
          #cmd='%s -dbtype %s -max_file_sz 20267296  -in %s -out %s' %(formatdb_executable, seqType, raw_sequence_file, _temp_formatted_db)
 
@@ -294,17 +281,19 @@ def formatDB(tools, db, refdbspath, seqType, dbType, algorithm, configs, logger 
        formatted_db_size = int(configs['FORMATTED_DB_SIZE'])
 
 
-     if algorithm=='LAST':
+     if seqType=='prot' and algorithm=='LAST':
          # dirname = os.path.dirname(raw_sequence_file)    
          cmd=""
          if seqType=="prot":
             cmd='%s -s %s -p -c %s  %s' %(formatdb_executable, formatted_db_size, _temp_formatted_db, raw_sequence_file)
-         if seqType=="nucl":
-            cmd='%s -s %s -c %s  %s' %(formatdb_executable, formatted_db_size,  _temp_formatted_db, raw_sequence_file)
+
+#         if seqType=="nucl":
+#            cmd='%s -s %s -c %s  %s' %(formatdb_executable, formatted_db_size,  _temp_formatted_db, raw_sequence_file)
 
          eprintf("INFO\tCommand to format \"%s\"\n", cmd)
          logger.printf("INFO\tCommand to format \"%s\"\n", cmd)
 
+     print 'COMMAND: ', cmd
      result= getstatusoutput(cmd)
      temp_fileList = glob(_temp_formatted_db + '*') 
 

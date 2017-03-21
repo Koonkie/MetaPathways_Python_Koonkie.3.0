@@ -631,12 +631,12 @@ class ContextCreator:
              context.outputs = { 'rRNA_blastout':rRNA_blastout, 'rRNA_stat_results': rRNA_stat_results }
 
              cmd1=""
-             if algorithm=="BLAST":
+             if True or algorithm=="BLAST":
                 executable =  self.configs.METAPATHWAYS_PATH +  PATHDELIM + self.configs.EXECUTABLES_DIR + PATHDELIM +  self.configs.BLASTN_EXECUTABLE
                 cmd1="%s -outfmt 6 -num_threads 8  -query %s -out %s -db %s -max_target_seqs 5"\
                       %(executable, context.inputs['input_fasta'], context.outputs['rRNA_blastout'], context.inputs1['dbpath'])
 
-             if algorithm=="LAST":
+             if False and algorithm=="LAST":
                 executable =  self.configs.METAPATHWAYS_PATH +  PATHDELIM + self.configs.EXECUTABLES_DIR + PATHDELIM +  self.configs.LAST_EXECUTABLE
                 cmd1="%s -f 2 -o %s %s %s"\
                       %(executable, context.outputs['rRNA_blastout'], context.inputs1['dbpath'], context.inputs['input_fasta'])

@@ -82,7 +82,7 @@ def createParser():
     blast_group.add_option('--blast_evalue', dest='blast_evalue', default=None,
                            help='The e-value cutoff for the BLASTP')
 
-    blast_group.add_option('--num_threads', dest='num_threads', default=None,
+    blast_group.add_option('--num_threads', dest='num_threads', default='1', type='str',
                            help='Number of BLAST threads')
 
     blast_group.add_option('--blast_max_target_seqs', dest='blast_max_target_seqs', default=None,
@@ -91,7 +91,7 @@ def createParser():
     blast_group.add_option('--blast_executable', dest='blast_executable',  default=None,
                            help='The BLASTP executable')
 
-    blast_group.add_option('--num_hits', dest='num_hits',  default=10,
+    blast_group.add_option('--num_hits', dest='num_hits',  default='10', type='str', 
                            help='The BLASTP executable')
 
     parser.add_option_group(blast_group)
