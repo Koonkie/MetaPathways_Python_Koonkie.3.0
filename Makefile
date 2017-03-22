@@ -37,15 +37,19 @@ GIT_SUBMODULE_UPDATE=gitupdate
 
 ## Alias for target 'all', for compliance with FogDog deliverables standard:
 all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) METAPATHWAYS_DB_FETCH PTOOLS_INSTALL
+#all: PTOOLS_INSTALL
 
 install: all
 
 .PHONY: PTOOLS_INSTALL
 PTOOLS_INSTALL:  ptools.tar.gz
-	@if [ ! -d ./ptools-files ]; then \
-		mkdir ./ptools-files; \
-		tar -zxvf ptools.tar.gz --directory ./ptools-files; \
-		sudo make -C ./ptools-files; \
+	@if [ ! -d $(PTOOLS_DIR)/pathway-tools ]; then \
+		rm -rf $(PTOOLS_DIR)/ptools; \
+		mkdir $(PTOOLS_DIR)/ptools; \
+		tar -zxvf ptools.tar.gz --directory $(PTOOLS_DIR)/ptools; \
+		cp resources/modified.fogdog.ptools.Makefile $(PTOOLS_DIR)/ptools/Makefile; \
+		sudo make -C $(PTOOLS_DIR)/ptools/; \
+		sudo chmod -R 777 /dev/shm/ptools-local/
 	fi
 
 

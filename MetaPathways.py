@@ -296,8 +296,23 @@ def sigint_handler(signum, frame):
     eprintf("Received TERMINATION signal\n")
     exit_process()
 
+
+def  environment_variables_defined():
+    variables = ['METAPATHWAYS_DB', 'PTOOLS_DIR']
+    status =True
+    for variable in variables:
+        if not variable in os.environ:
+           status=False
+           eprintf("ERROR\tEnvironment variable %s not defined\n!", variable)
+    
+    return status
+
 def main(argv):
     global parser
+
+    if not environment_variables_defined():
+       sys.exit(0)
+
     (opts, args) = parser.parse_args()
     if valid_arguments(opts, args):
        print usage

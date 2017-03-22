@@ -143,7 +143,7 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
     else:
       # required files to be able to build ePGDB
       files = [ 
-                options.inputfolder + PATHDELIM + '0.pf',
+                #options.inputfolder + PATHDELIM + '0.pf',
                 # options.inputfolder + PATHDELIM + '0.fasta',
                 options.inputfolder + PATHDELIM + 'genetic-elements.dat',  
                 options.inputfolder + PATHDELIM + 'organism-params.dat'
@@ -173,6 +173,7 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
 
     status =0
     fix_pgdb_input_files(options.pgdbdir, pgdbs = [])
+
 
     if not path.exists(options.pgdbdir):
       status  = runPathologicCommand(runcommand = command) 
@@ -430,6 +431,7 @@ def  ExtractPathway_WTD(options):
 def runPathologicCommand(runcommand = None):
     if runcommand == None:
       return False
+    print runcommand
     result = getstatusoutput(runcommand)
     return result[0]
 
