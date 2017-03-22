@@ -632,7 +632,11 @@ class ContextCreator:
 
              cmd1=""
              if True or algorithm=="BLAST":
-                executable =  self.configs.METAPATHWAYS_PATH +  PATHDELIM + self.configs.EXECUTABLES_DIR + PATHDELIM +  self.configs.BLASTN_EXECUTABLE
+                executable = which('blastn') 
+                if executable==None:
+                    eprintf("ERROR\tCannot find blastn\n")
+                        #logger.printf("ERROR\tCannot find blastn to format\n")
+
                 cmd1="%s -outfmt 6 -num_threads 8  -query %s -out %s -db %s -max_target_seqs 5"\
                       %(executable, context.inputs['input_fasta'], context.outputs['rRNA_blastout'], context.inputs1['dbpath'])
 
@@ -1357,8 +1361,8 @@ class ContextCreator:
                   if item in ["FORMATDB_EXECUTABLE"]:
                      executable = which('makeblastdb') 
                      if executable==None:
-                        eprintf("ERROR\tCannot find makeblastdb to format \"%s\"\n")
-                        logger.printf("ERROR\tCannot find makeblastdb to format \"%s\"\n")
+                        eprintf("ERROR\tCannot find makeblastdb to format\n")
+                        #logger.printf("ERROR\tCannot find makeblastdb to format\n")
                         return False
                      else:
                         setattr(self.configs, item, executable)
@@ -1366,16 +1370,16 @@ class ContextCreator:
                   elif item in ["BLASTP_EXECUTABLE"]:
                      executable = which('blastp') 
                      if executable==None:
-                        eprintf("ERROR\tCannot find blastp to format \"%s\"\n")
-                        logger.printf("ERROR\tCannot find blastp to format \"%s\"\n")
+                        eprintf("ERROR\tCannot find blastp\n")
+                        #logger.printf("ERROR\tCannot find blastp to format\n")
                         return False
                      else:
                         setattr(self.configs, item, executable)
                   elif item in [ "BLASTN_EXECUTABLE"]:
                      executable = which('blastn') 
                      if executable==None:
-                        eprintf("ERROR\tCannot find blastn to format \"%s\"\n")
-                        logger.printf("ERROR\tCannot find blastn to format \"%s\"\n")
+                        eprintf("ERROR\tCannot find blastn\n")
+                        #logger.printf("ERROR\tCannot find blastn to format\n")
                         return False
                      else:
                         setattr(self.configs, item, executable)

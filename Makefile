@@ -52,7 +52,7 @@ PTOOLS_INSTALL:  ptools.tar.gz
 .PHONY: METAPATHWAYS_DB_FETCH
 METAPATHWAYS_DB_FETCH:
 	@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB)...." 
-	@if [ ! -d $(METAPATHWAYS_DB) ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB)/; fi
+	@if [ ! -d $(METAPATHWAYS_DB)/functional ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB)/; fi
 
 
 
