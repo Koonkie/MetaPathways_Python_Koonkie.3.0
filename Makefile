@@ -130,11 +130,11 @@ test: test-microbe-census test-mp-regression-tests
 
 
 clean:
-	$(MAKE) $(CFLAGS) executables/source/trnascan clean
-	$(MAKE) $(CFLAGS) executables/source/rpkm clean
-	$(MAKE) $(CFLAGS) executables/source/prodigal.v2_00 clean
-	$(MAKE) $(CFLAGS) executables/source/FAST clean
-	$(MAKE) $(CFLAGS) executables/source/bwa clean
+	$(MAKE) $(CFLAGS) executables/source/trnascan clean ||\
+		$(MAKE) $(CFLAGS) executables/source/rpkm clean ||\
+		$(MAKE) $(CFLAGS) executables/source/prodigal.v2_00 clean ||\
+		$(MAKE) $(CFLAGS) executables/source/FAST clean ||\
+		$(MAKE) $(CFLAGS) executables/source/bwa clean || true
 
 remove:
 	rm -rf  ../$(OS_PLATFORM)/trnascan-1.4 
