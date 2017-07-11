@@ -310,9 +310,6 @@ def  environment_variables_defined():
 def main(argv):
     global parser
 
-    if not environment_variables_defined():
-       sys.exit(0)
-
     (opts, args) = parser.parse_args()
     if valid_arguments(opts, args):
        print usage
@@ -443,6 +440,9 @@ def main(argv):
     if not path.exists(config_file):
         eprintf("WARNING:\tNo config file %s found!\n" %(config_file))
         eprintf("INFO:\tCreating a config file %s!\n" %(config_file))
+        if not environment_variables_defined():
+           sys.exit(0)
+
         create_metapaths_configuration(config_file, cmd_folder)
     config_settings = read_pipeline_configuration(config_file, globalerrorlogger)
 
