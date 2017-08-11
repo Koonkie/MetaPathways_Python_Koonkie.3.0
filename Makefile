@@ -5,7 +5,9 @@ LEXFLAGS=-lfl
 CFLAGS=-C
 
 #example: 
-#     a) make install METAPATHWAYS_DB=../ 
+#     export  METAPATHWAYS_DB=../fogdogdatabases
+#     export  PTOOLS_DIR=../ptools/
+#     a) make install METAPATHWAYS_DB=../fogdogdatabases  
 #     this will get the files uploaded by wholebiome into the path in METAPATHWAYS_DB
 #
 #     b) make install 
@@ -29,6 +31,7 @@ PRODIGAL=$(BINARY_FOLDER)/prodigal
 
 MICROBE_CENSUS=microbe_census
 METAPATHWAYS_DB_DEFAULT=../fogdogdatabases
+PTOOLS_DIR=../
 METAPATHWAYS_DB_TAR=Metapathways_DBs_2016-04.tar.xz
 
 
@@ -36,10 +39,15 @@ METAPATHWAYS_DB_TAR=Metapathways_DBs_2016-04.tar.xz
 GIT_SUBMODULE_UPDATE=gitupdate
 
 ## Alias for target 'all', for compliance with FogDog deliverables standard:
-all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) METAPATHWAYS_DB_FETCH PTOOLS_INSTALL
-#all: PTOOLS_INSTALL
+all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) METAPATHWAYS_DB_FETCH PTOOLS_FETCH PTOOLS_INSTALL
+#all: PTOOLS_FETCH
 
 install: all
+
+.PHONY: PTOOLS_FETCH
+PTOOLS_FETCH:  
+	@if [ ! -f ptools.tar.gz ]; then  aws s3 cp s3://fogdogdatabases/ptools.tar.gz  .; fi
+  
 
 .PHONY: PTOOLS_INSTALL
 PTOOLS_INSTALL:  ptools.tar.gz
@@ -56,6 +64,7 @@ PTOOLS_INSTALL:  ptools.tar.gz
 .PHONY: METAPATHWAYS_DB_FETCH
 METAPATHWAYS_DB_FETCH:
 	@echo  "Fetching the database from S3 to $(METAPATHWAYS_DB)...." 
+	@if [ ! -d $(METAPATHWAYS_DB) ]; then  mkdir $(METAPATHWAYS_DB); fi
 	@if [ ! -d $(METAPATHWAYS_DB)/functional ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB)/; fi
 
 
