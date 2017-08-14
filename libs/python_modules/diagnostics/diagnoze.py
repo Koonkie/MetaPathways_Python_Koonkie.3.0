@@ -19,6 +19,7 @@ try:
     from tools import *
     from libs.python_modules.utils.sysutil import pathDelim, getstatusoutput
     from libs.python_modules.utils.utils import *
+    from libs.python_modules.utils.errorcodes import *
     from libs.python_modules.utils.metapathways_utils import  fprintf
     from os import path, _exit, rename , remove
 except:
@@ -64,9 +65,11 @@ def staticDiagnose(configs, params, logger = None ):
 
 #    print  parameters.getRunSteps( activeOnly = True)
     if not checkForRequiredDatabases(tools, params, configs, 'functional',  logger = logger):
+        insert_error(17)
         return False
         
     if not checkForRequiredDatabases(tools, params, configs, 'taxonomic',  logger = logger):
+        insert_error(17)
         return False
     
     message = checkbinaries(configs)
@@ -190,6 +193,7 @@ def checkForRequiredDatabases(tools, params, configs, dbType, logger =None):
     """ checks raw sequences for dbtype functional/taxonimic """
     if isRefDBNecessary(params, dbType):
         if not check_for_raw_sequences(dbs, refdbspath, dbType,  logger = logger):
+          insert_error(17)
           return False
 
         for db in dbs:
@@ -439,7 +443,6 @@ def check_for_raw_sequences(dbs, refdbspath, dbType,  logger = None):
             eprintf("ERROR\tRaw sequences %s expected for %s references\n", fullPath, dbType)
             logger.printf("ERROR\tRaw sequences %s expected for %s references\n", fullPath, dbType)
             status = False
-
     return status 
     
 

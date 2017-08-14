@@ -357,7 +357,7 @@ def main(argv):
               "       Perhaps directory \"" + output_dir  + "\" already exists.\n" +\
               "       Please choose a different directory, or \n" +\
               "       run with the option \"-r  overwrite\" to force overwrite it."
-        sys.exit(1)
+        sys.exit(2)
 
         
     if verbose:
@@ -417,6 +417,7 @@ def main(argv):
 
     #check the pipeline configuration
 
+    print 'config'
     if not path.exists(config_file):
         eprintf("%-10s: No config file %s found!\n" %('WARNING', config_file))
         eprintf("%-10s: Creating a config file %s!\n" %('INFO', config_file))
@@ -431,8 +432,7 @@ def main(argv):
     if not staticDiagnose(config_settings, params, logger = globalerrorlogger):
         eprintf("ERROR\tFailed to pass the test for required scripts and inputs before run\n")
         globalerrorlogger.printf("ERROR\tFailed to pass the test for required scripts and inputs before run\n")
-        halt_process(opts.delay)
-
+        return 
     
     samplesData = {}
     # PART1 before the blast
@@ -484,23 +484,6 @@ def main(argv):
               eprintf("ERROR\tNo valid input files/Or no files specified  to process in folder %s!\n",sQuote(input_fp) )
               globalerrorlogger.printf("ERROR\tNo valid input files to process in folder %s!\n",sQuote(input_fp) )
    
-        
-         # blast the files
-         blasting_system =    get_parameter(params,  'metapaths_steps', 'BLAST_REFDB', default='yes')
-         if blasting_system =='grid':
-            #  blasting the files files on the grids
-             input_files = sorted_input_output_list
-             blast_in_grid(
-                   sampleData[input_file],
-                   input_files, 
-                   path.abspath(opts.output_dir),   #important to use opts.
-                   params=params,
-                   metapaths_config=metapaths_config,
-                   config_file=config_file,
-                   run_type = run_type,
-                   runid = runid
-                )
-     
     except:
        exit_process(str(traceback.format_exc(10)), logger= globalerrorlogger )
 
@@ -511,16 +494,14 @@ def main(argv):
     eprintf("             THE END                   \n")
     eprintf("            ***********                \n")
     #halt_process(opts.delay)
-    halt_process(1, verbose=opts.verbose)
+    #halt_process(3, verbose=opts.verbose)
 
 # the main function of metapaths
 if __name__ == "__main__":
     createParser()
-    try:
-      main(sys.argv[1:])    
-    except:
-      sys.exit(1) 
 
-    halt_process(1)
+    main(sys.argv[1:])    
+    sys.exit(get_recent_error())
+    halt_process(3)
     
 
