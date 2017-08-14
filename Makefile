@@ -7,11 +7,13 @@ CFLAGS=-C
 #example: 
 #     export  METAPATHWAYS_DB=../fogdogdatabases
 #     export  PTOOLS_DIR=../ptools/
-#     a) make install METAPATHWAYS_DB=../fogdogdatabases  
-#     this will get the files uploaded by wholebiome into the path in METAPATHWAYS_DB
+#     a) make install-without-ptools  METAPATHWAYS_DB=../fogdogdatabases  
+#     this will get the files uploaded by wholebiome into the path in METAPATHWAYS_DB but NOT the ptools
 #
-#     b) make install 
-#     this will get the files uploaded by koonkie into the path in METAPATHWAYS_DB_DEFAULT (see below)
+#     b) make install-with-ptools
+#     this will get the files uploaded by koonkie into the path in METAPATHWAYS_DB and the ptools.tar.gz into the PTOOLS_DIR
+#
+#     c) make mp-regression-tests:
 #
 
 OS_PLATFORM=linux
@@ -43,9 +45,9 @@ all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRN
 #all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) METAPATHWAYS_DB_FETCH PTOOLS_FETCH PTOOLS_INSTALL
 #all: PTOOLS_FETCH
 
-install_without_ptools: all METAPATHWAYS_DB_FETCH
+install-without-ptools: all METAPATHWAYS_DB_FETCH
 
-install_with_ptools: all METAPATHWAYS_DB_FETCH PTOOLS_FETCH PTOOLS_INSTALL
+install-with-ptools: all METAPATHWAYS_DB_FETCH PTOOLS_FETCH PTOOLS_INSTALL
 
 .PHONY: PTOOLS_FETCH
 PTOOLS_FETCH:  
@@ -161,7 +163,7 @@ test-microbe-census:
 	cd executables/source/MicrobeCensus/tests && python test_microbe_census.py
 
 
-test-mp-regression-tests:
+mp-regression-tests:
 	./run_regtests.sh
 
 
