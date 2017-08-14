@@ -7,13 +7,14 @@ CFLAGS=-C
 #example: 
 #     export  METAPATHWAYS_DB=../fogdogdatabases
 #     export  PTOOLS_DIR=../ptools/
+#
 #     a) make install-without-ptools  METAPATHWAYS_DB=../fogdogdatabases  
 #     this will get the files uploaded by wholebiome into the path in METAPATHWAYS_DB but NOT the ptools
 #
-#     b) make install-with-ptools
-#     this will get the files uploaded by koonkie into the path in METAPATHWAYS_DB and the ptools.tar.gz into the PTOOLS_DIR
+#     b) make mp-regression-tests:
 #
-#     c) make mp-regression-tests:
+#     c) make install-with-ptools
+#     this will get the files uploaded by koonkie into the path in METAPATHWAYS_DB and the ptools.tar.gz into the PTOOLS_DIR
 #
 
 OS_PLATFORM=linux
