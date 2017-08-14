@@ -435,7 +435,7 @@ def check_for_raw_sequences(dbs, refdbspath, dbType,  logger = None):
     status = True
     for db in dbs:
        fullPath =  refdbspath + PATHDELIM + dbType + PATHDELIM +  db 
-       if not doesFolderExist(fullPath):
+       if not does_plain_or_gz_FileExist(fullPath):
             eprintf("ERROR\tRaw sequences %s expected for %s references\n", fullPath, dbType)
             logger.printf("ERROR\tRaw sequences %s expected for %s references\n", fullPath, dbType)
             status = False
@@ -488,7 +488,7 @@ def executablesExist( executables, configs, logger = None ):
 
       if name=='PATHOLOGIC_EXECUTABLE' and  path.exists(script):
            #print "FIX ME: diagnoze"
-           eprintf("ERROR\tif you do not wish to install the Pathway-Tools and  run the ePGDB building step \n" + 
+           eprintf("INFO     :if you do not wish to install the Pathway-Tools and  run the ePGDB building step \n" + 
                        "\tyou might want to create the place holder file by using the \"touch %s\" (%s) \n",script, name)
            continue
 

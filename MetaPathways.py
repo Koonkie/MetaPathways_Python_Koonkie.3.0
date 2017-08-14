@@ -297,13 +297,14 @@ def sigint_handler(signum, frame):
     exit_process()
 
 
-def  environment_variables_defined():
-    variables = ['METAPATHWAYS_DB', 'PTOOLS_DIR']
+def environment_variables_defined():
+    variables = ['METAPATHWAYS_DB']
     status =True
     for variable in variables:
-        if not variable in os.environ:
+      if not variable in os.environ:
+         eprintf("%-10s:Environment variable %s not defined! Please set %s as \'export %s=<value>\'\n" %('ERROR', variable, variable,variable))
+         if variables in ['METAPATHWAYS_DB']:
            status=False
-           eprintf("ERROR\tEnvironment variable %s not defined\n!", variable)
     
     return status
 
@@ -318,7 +319,7 @@ def main(argv):
     signal.signal(signal.SIGINT, sigint_handler)
     signal.signal(signal.SIGTERM, sigint_handler)
 
-    eprintf("COMMAND : %s\n", sys.argv[0] + ' ' +  ' '.join(argv))
+    eprintf("%-10s:%s\n" %('COMMAND', sys.argv[0] + ' ' +  ' '.join(argv)) )
     # initialize the input directory or file
     input_fp = opts.input_fp 
     output_dir = path.abspath(opts.output_dir)
@@ -341,22 +342,6 @@ def main(argv):
     else:
        config_file = cmd_folder + PATHDELIM + metapaths_config
     
-    if opts.ncbi_header and opts.ncbi_sbt:
-       if not path.exists(opts.ncbi_header):
-          print "Could not open or missing NCBI header file " + opts.ncbi_header
-          print "Either disable option to CREATE_SEQUIN_FILE or provide a valid header file"
-          sys.exit(0)
-
-       if  not path.exists(opts.ncbi_sbt):
-          print """You must must have a sbt file obtained from the NCBI \"Create Submission Template\" form \n 
-                 http://www.ncbi.nlm.nih.gov/WebSub/template.cgi """ + opts.ncbi_sbt
-          sys.exit(0)
-
-       ncbi_sequin_params = path.abspath(opts.ncbi_header)
-       ncbi_sequin_sbt = path.abspath(opts.ncbi_sbt)
-    else:
-       ncbi_sequin_params = None
-       ncbi_sequin_sbt = None
 
     # try to load the parameter file    
     try:
@@ -389,8 +374,8 @@ def main(argv):
     command_line_params['verbose']= opts.verbose
 
     if not path.exists(parameter_fp):
-        eprintf("WARNING:\tNo parameters file %s found!\n" %(parameter_fp))
-        eprintf("INFO   :\tCreating a parameters file %s found!\n" %(parameter_fp))
+        eprintf("%-10s: No parameters file %s found!\n" %('WARNING', parameter_fp))
+        eprintf("%-10s: Creating a parameters file %s found!\n" %('INFO', parameter_fp))
         create_metapaths_parameters(parameter_fp, cmd_folder)
 
     params=parse_metapaths_parameters(parameter_fp)
@@ -438,12 +423,12 @@ def main(argv):
     #check the pipeline configuration
 
     if not path.exists(config_file):
-        eprintf("WARNING:\tNo config file %s found!\n" %(config_file))
-        eprintf("INFO:\tCreating a config file %s!\n" %(config_file))
+        eprintf("%-10s: No config file %s found!\n" %('WARNING', config_file))
+        eprintf("%-10s: Creating a config file %s!\n" %('INFO', config_file))
         if not environment_variables_defined():
            sys.exit(0)
-
         create_metapaths_configuration(config_file, cmd_folder)
+
     config_settings = read_pipeline_configuration(config_file, globalerrorlogger)
 
 

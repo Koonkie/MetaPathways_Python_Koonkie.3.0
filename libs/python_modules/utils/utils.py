@@ -413,6 +413,12 @@ def doesFileExist( fileName ):
     else:
         return True
 
+def does_plain_or_gz_FileExist( fileName ):
+    if path.exists(fileName) or path.exists(fileName) :
+        return False
+    return False
+
+
 
 
 
