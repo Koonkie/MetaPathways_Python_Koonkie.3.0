@@ -1073,7 +1073,6 @@ def create_metapaths_configuration(filename, folder):
             VARIABLE=result.group(1)
             CONFIG_VARIABLE =[ x for x in line.split(' ') if x.strip() ][0]
 
-            print CONFIG_VARIABLE
             if VARIABLE in setVariables:
                line =line.replace( '<'+ VARIABLE + '>', setVariables[VARIABLE])
             elif VARIABLE in os.environ:

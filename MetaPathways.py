@@ -108,16 +108,11 @@ def createParser():
                       action="store_true", dest="print_only", default=False,
                       help="print only  the commands [default False]")
     
-    parser.add_option("-n", "--ncbi-header", dest="ncbi_header", 
-                      help="NCBI sequin submission parameters file" )
-    
     parser.add_option("-s", "--subset", dest="sample_subset", action="append", default=[],
                       help="Processes only samples in the list  subset specified [ -s sample1 -s sample2 ]" )
     
     parser.add_option("--runid", dest="runid",  default="",
                       help="Any string to represent the runid [ default Empty string ]" )
-    #parser.add_option("-s", "--ncbi-sbt-file", dest="ncbi_sbt", 
-    #                  help="the NCBI sbt location created by the \"Create Submission Template\" form: http://www.ncbi.nlm.nih.gov/WebSub/template.cgi" )
 
 
 
@@ -456,8 +451,6 @@ def main(argv):
                 s = SampleData() 
                 s.setInputOutput(inputFile = input_file, sample_output_dir = sample_output_dir)
                 s.setParameter('algorithm', algorithm)
-                s.setParameter('ncbi_params_file', ncbi_sequin_params)
-                s.setParameter('ncbi_sequin_sbt', ncbi_sequin_sbt)
                 s.setParameter('FILE_TYPE', filetypes[input_file][0])
                 s.setParameter('SEQ_TYPE', filetypes[input_file][1])
                 s.clearJobs()

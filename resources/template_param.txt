@@ -26,8 +26,11 @@ annotation:algorithm BLAST
 
 # e.g. annotation:dbs    cog,kegg,refseq,metacyc
 annotation:dbs_high card, tcdb, metacyc-2016-10-31
-annotation:dbs_custom card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31, refseq-2016-10-06-rel-78
-annotation:dbs card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31, refseq-2016-10-06-rel-78
+#annotation:dbs_custom card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31, refseq-2016-10-06-rel-78
+#annotation:dbs card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31, refseq-2016-10-06-rel-78
+
+annotation:dbs_custom card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31
+annotation:dbs card, cazydb, tcdb, merops, VFDB, uniprot_sprot COG-14-2016-10-20, metacyc-2016-10-31
 
 # high/all/custom
 annotation:dbtype custom
