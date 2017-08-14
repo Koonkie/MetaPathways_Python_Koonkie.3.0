@@ -166,6 +166,7 @@ test-microbe-census:
 
 mp-regression-tests:
 	./run_regtests.sh
+	@exit $$?
 
 
 ## Top-level test target
