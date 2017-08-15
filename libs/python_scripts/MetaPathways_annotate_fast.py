@@ -20,6 +20,7 @@ try:
     from libs.python_modules.utils.sysutil import getstatusoutput
     from libs.python_modules.utils.utils  import doesFileExist
     from libs.python_modules.utils.errorcodes import error_message, get_error_list, insert_error
+    from libs.python_modules.utils.errorcodes  import *
 
 except:
     print """ Could not load some user defined  module functions"""
@@ -30,6 +31,8 @@ except:
 
 usage=  sys.argv[0] + """ -d dbname1 -b parsed_blastout_for_database1 -w weight_for_database1 [-d dbname2 -b parsed_blastout_for_database2 -w weight_for_database2 ] [ --rRNA_16S  16SrRNA-stats-table ] [ --tRNA tRNA-stats-table ] [ --compact_output ]"""
 parser = None
+
+errrocode=8
 
 def createParser():
      global parser
@@ -300,6 +303,7 @@ def create_dictionary(databasemapfile, annot_map):
            
 
 def write_annotation_for_orf(outputgff_file, candidatedbname, dbname_weight, results_dictionary, orf_dictionary, contig, candidate_orf_pos,  orfid, compact_output):
+   global errorcode
    try:
       fields = [  'source', 'feature', 'start', 'end', 'score', 'strand', 'frame' ]
 
@@ -343,6 +347,7 @@ def write_annotation_for_orf(outputgff_file, candidatedbname, dbname_weight, res
       eprintf("ERROR : Failure to annotate in contig %s\n", contig)
       #print orf_dictionary[contig]
       print traceback.print_exc(10)
+      insert_error(errorcode)
       exit_process()
 
 
@@ -884,6 +889,7 @@ def read_contig_lengths(contig_map_file, contig_lengths):
         mapfile = open(contig_map_file, 'r')
      except IOError:
         print "Cannot read file " + contig_map_file + " !"
+        insert_error(errorcode)
         return
 
      mapfile_lines = mapfile.readlines()
@@ -942,6 +948,7 @@ def main(argv, errorlogger =None, runstatslogger = None):
            database_names, input_blastouts, weight_dbs = getBlastFileNames(opts) 
         except:
            print traceback.print_exc(10)
+           insert_error(errorcode)
            pass
     else:
         database_names = opts.database_name
@@ -981,7 +988,7 @@ def MetaPathways_annotate_fast(argv, errorlogger = None, runstatslogger = None):
     try:
        main(argv, errorlogger = errorlogger, runstatslogger = runstatslogger)
     except:
-       insert_error(8)
+       insert_error(errorcode)
        return (0,'')
 
 

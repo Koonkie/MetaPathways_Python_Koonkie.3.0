@@ -12,11 +12,15 @@ errorcodes[8]="Error during the ANNOTATION step"
 errorcodes[9]="Error during the BUILD_PGDB step"
 errorcodes[10]="Error during the COMPUTE_RPKM step"
 errorcodes[200]="Multiple errors found run again with \"-v\" or check the \"errors_warnings_log.txt\" for details"
+errorcodes[11]="Error while creating biom format files"
+errorcodes[12]="Error while creating Pathologic input"
+errorcodes[11]="Error while creating biom format files"
 errorcodes[15]="Error while computing refscores"
 errorcodes[16]="Error during the CREATE_ANNOT_REPORTS step"
 errorcodes[17]="Raw secuences for databases missing"
 errorcodes[18]="Missing environment variable"
 
+errorcodes[200]="Multiple errors found run again with \"-v\" or check the \"errors_warnings_log.txt\" for details"
 
 errors={}
 error_list=[]

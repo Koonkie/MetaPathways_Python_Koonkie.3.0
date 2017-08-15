@@ -18,6 +18,7 @@ except:
      sys.exit(3)
 
 
+errorcode= 3
 def fprintf(file, fmt, *args):
     file.write(fmt % args)
 
@@ -469,32 +470,44 @@ def main(argv, errorlogger = None, runstatslogger = None):
     options, args = parser.parse_args(argv)
 
     if not(options.gff_file or options.nucleotide_sequences or options.output_amino or  options.output_nuc  or options.output_gff):
-      print help
-      sys.exit(0)
+       insert_error(errorcode)
+       return(1,'')
     
     if not options.gff_file:
        parser.error('No gff files are specified')
+       insert_error(errorcode)
+       return(1,'')
 
     if not options.nucleotide_sequences:
        parser.error('Nucleotide sequences')
+       insert_error(errorcode)
+       return(1,'')
 
     if not options.output_amino:
        parser.error('Output anino acid file must be specified')
+       insert_error(errorcode)
+       return(1,'')
 
     if not options.output_nuc:
        parser.error('Output nucloetide sequences file must be specified')
+       insert_error(errorcode)
+       return(1,'')
 
     if not options.output_gff:
        parser.error('Output gff file must be specified')
+       insert_error(errorcode)
+       return(1,'')
     #print options
 
     if not path.exists(options.gff_file):
         print "gff file does not exist"
-        sys.exit(0)
+        insert_error(errorcode)
+        return(1,'')
 
     if not path.exists(options.nucleotide_sequences):
         print "nucloetide sequences file does not exist"
-        sys.exit(0)
+        insert_error(errorcode)
+        return(1,'')
 
     nucleotide_seq_dict = {}
     process_sequence_file( options.nucleotide_sequences, nucleotide_seq_dict) 
@@ -504,15 +517,15 @@ def main(argv, errorlogger = None, runstatslogger = None):
     #print params['bitscore']
 
 def MetaPathways_create_amino_sequences(argv, errorlogger = None, runstatslogger = None):
+    global errorcode
     createParser()
     try:
-       main(argv, errorlogger = errorlogger, runstatslogger = runstatslogger)
+       res = main(argv, errorlogger = errorlogger, runstatslogger = runstatslogger)
     except:
-       insert_error(3)
-       return (0,'')
+       insert_error(errorcode)
+       return (1,'')
 
-
-    return (0,'')
+    return (res[0], res[1])
     
 if __name__ == '__main__':
     createParser()

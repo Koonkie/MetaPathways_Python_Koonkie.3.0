@@ -21,6 +21,7 @@ try:
                fprintf, printf, eprintf,  GffFileParser, exit_process, getShortORFId, getSampleNameFromContig,  ShortenORFId, ShortenContigId
      from libs.python_modules.utils.sysutil import getstatusoutput, pathDelim
      from libs.python_modules.utils.utils import *
+     from libs.python_modules.utils.errorcodes import *
 
 except:
      print """ Could not load some user defined  module functions"""
@@ -31,6 +32,7 @@ except:
 
 usage= sys.argv[0] + """ -d dbname1 -b parsed_blastout_for_database1 [-d dbname2 -b parsed_blastout_for_database2 ] --input-annotated-gff input.gff  """
 PATHDELIM = pathDelim()
+errorcode=16
 
 parser=None
 def createParser():
@@ -1061,6 +1063,7 @@ def main(argv, errorlogger = None,  runstatslogger = None):
                    Taxons[key] = taxon
             except:
                eprintf("ERROR: while training for min support tree %s\n", dbname)
+               insert_error(errorcode)
                traceback.print_exc()
 
     blastParsers={}
@@ -1170,6 +1173,7 @@ def process_subsys2peg_file(subsystems2peg, subsystems2peg_file):
          orgfile = open(subsystems2peg_file,'r')
      except IOError:
          print "Cannot open " + str(subsystems2peg_file)
+         insert_error(errorcode)
      lines = orgfile.readlines()
      orgfile.close()
      for line in lines:
@@ -1179,6 +1183,7 @@ def process_subsys2peg_file(subsystems2peg, subsystems2peg_file):
      try:
         orgfile.close()
      except:
+         insert_error(errorcode)
          print "Cannot close " + str(subsystems2peg_file)
 
 

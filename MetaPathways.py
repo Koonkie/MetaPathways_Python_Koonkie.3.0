@@ -502,6 +502,6 @@ if __name__ == "__main__":
 
     main(sys.argv[1:])    
     sys.exit(get_recent_error())
-    halt_process(3)
+    halt_process(1)
     
 

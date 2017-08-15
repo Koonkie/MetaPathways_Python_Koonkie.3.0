@@ -9,6 +9,7 @@ try:
    from glob import glob
    import multiprocessing
 
+   from libs.python_modules.utils.errorcodes import *
    from libs.python_modules.utils.sysutil import pathDelim
    from libs.python_modules.utils.metapathways_utils  import fprintf, printf, eprintf, exit_process, getReadFiles
    from libs.python_modules.utils.sysutil import getstatusoutput
@@ -219,26 +220,32 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
     options, args = parser.parse_args(argv)
     if not (options.contigs!=None and  path.exists(options.contigs)):
        parser.error('ERROR\tThe contigs file is missing')
+       insert_error(10)
        return 255
 
     if not (options.rpkmExec !=None and path.exists(options.rpkmExec) ) :
        parser.error('ERROR\tThe RPKM executable is missing')
+       insert_error(10)
        return 255 
 
     if not (options.bwaExec !=None and path.exists(options.bwaExec) ) :
        parser.error('ERROR\tThe BWA executable is missing')
+       insert_error(10)
        return 255 
 
     if not (options.readsdir !=None and path.exists(options.readsdir) ):
        parser.error('ERROR\tThe RPKM directory is missing')
+       insert_error(10)
        return 255 
 
     if not (options.bwaFolder !=None and path.exists(options.bwaFolder) ):
        parser.error('ERROR\tThe BWA directory is missing')
+       insert_error(10)
        return 255 
 
     if  options.sample_name==None :
        parser.error('ERROR\tThe sample name is missing')
+       insert_error(10)
        return 255 
 
 
@@ -256,6 +263,7 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
            if errorlogger:
              errorlogger.eprintf("ERROR\tCannot find the read files not found for sample %s!\n", options.sample_name)
              errorlogger.eprintf("ERROR\tMetaPathways need to have the sample names in the format %s.fastq or (%s_1.fastq and %s_2.fastq) !\n", options.sample_name, options.sample_name, options.sample_name)
+             insert_error(10)
              return 255
     
         # index for BWA
@@ -267,6 +275,7 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
            eprintf("ERROR\tCannot index the preprocessed file %s!\n", options.contigs)
            if errorlogger:
               errorlogger.eprintf("ERROR\tCannot index the preprocessed file %s!\n", options.contigs)
+              insert_error(10)
            return 255
            #exit_process("ERROR\tMissing read files!\n")
     
@@ -279,6 +288,7 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
                eprintf("ERROR\tCannot successfully run MicrobeCensus for file %s!\n", options.contigs)
                if errorlogger:
                   errorlogger.eprintf("ERROR\tCannot successfully run MicrobeCensus for file %s!\n", options.contigs)
+                  insert_error(10)
                return 255
 
 
@@ -296,6 +306,7 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
            eprintf("ERROR\tCannot successfully run BWA for file %s!\n", options.contigs)
            if errorlogger:
               errorlogger.eprintf("ERROR\tCannot successfully run BWA for file %s!\n", options.contigs)
+              insert_error(10)
            return 255
            #exit_process("ERROR\tFailed to run BWA!\n")
            # END of running BWA
@@ -305,6 +316,7 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
 
     if not samFiles:
        eprintf("ERROR\tSam files not created for RPMK run!\n")
+       insert_error(10)
        return 255
 
     print 'Running RPKM'
@@ -312,6 +324,7 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
        eprintf("ERROR\tRPKM executable %s not found!\n", options.rpkmExec)
        if errorlogger:
           errorlogger.printf("ERROR\tRPKM executable %s not found!\n",  options.rpkmExec)
+       insert_error(10)
        return 255
        #exit_process("ERROR\tRPKM executable %s not found!\n" %(options.rpkmExec))
 
@@ -356,6 +369,7 @@ def main(argv, errorlogger = None, runcommand = None, runstatslogger = None):
 
     if rpkmstatus!=0:
        eprintf("ERROR\tRPKM calculation was unsuccessful\n")
+       insert_error(10)
        return 255
        #exit_process("ERROR\tFailed to run RPKM" )
 
@@ -414,6 +428,7 @@ def process_organism_file(filel):
          orgfile = open(filel,'r')
      except IOError:
          print "ERROR : Cannot open organism file" + str(filel)
+         insert_error(10)
          return 
 
      lines = orgfile.readlines()
@@ -466,7 +481,10 @@ def MetaPathways_rpkm(argv, extra_command = None, errorlogger = None, runstatslo
     if errorlogger != None:
        errorlogger.write("#STEP\tRPKM_CALCULATION\n")
     createParser()
-    returncode = main(argv, errorlogger = errorlogger, runcommand= extra_command, runstatslogger = runstatslogger)
+    try:
+       returncode = main(argv, errorlogger = errorlogger, runcommand= extra_command, runstatslogger = runstatslogger)
+    except:
+       insert_error(10)
     return (returncode,'')
 
 if __name__ == '__main__':

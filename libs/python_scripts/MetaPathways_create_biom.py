@@ -21,6 +21,7 @@ try:
     from libs.python_modules.utils.metapathways_utils  import strip_taxonomy, ShortenORFId, ShortenContigId, ContigID, ShortenrRNAId
     from libs.python_modules.utils.sysutil import getstatusoutput
     from libs.python_modules.utils.utils  import doesFileExist, createDummyFile
+    from libs.python_modules.utils.errorcodes  import *
     from libs.python_modules.utils.sysutil import pathDelim
     from libs.python_modules.parsers.blast  import  BlastOutputTsvParser, getParsedBlastFileNames, getrRNAStatFileNames
 except:
@@ -314,15 +315,23 @@ def main(argv, errorlogger =None, runstatslogger = None):
     createDummyFile(opts.outputdir + PATHDELIM + opts.sample_name + ".dummy.txt")
 
     #create the annotations from he results
+    
 
-def MetaPathways_annotate_fast(argv, errorlogger = None, runstatslogger = None):       
+def MetaPathways_create_biom(argv, errorlogger = None, runstatslogger = None):       
     createParser()
-    errorlogger.write("#STEP\tANNOTATE_ORFS\n")
-    main(argv, errorlogger = errorlogger, runstatslogger = runstatslogger)
+    errorlogger.write("#STEP\tCREATE_BIOM\n")
+    try:
+       main(argv, errorlogger = errorlogger, runstatslogger = runstatslogger)
+    except:
+       insert_error(11)
+
     return (0,'')
 
 # the main function of metapaths
 if __name__ == "__main__":
     createParser()
-    main(sys.argv[1:])
+    try:
+       main(sys.argv[1:])
+    except:
+       insert_error(11)
 

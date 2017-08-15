@@ -19,6 +19,7 @@ try:
      from libs.python_modules.utils.metapathways_utils  import parse_command_line_parameters, fprintf, printf, eprintf,  exit_process, ShortenORFId
      from libs.python_modules.utils.sysutil import getstatusoutput
      from libs.python_modules.utils.errorcodes import error_message, get_error_list, insert_error
+     from libs.python_modules.utils.errorcodes import *
 except:
      print """ Could not load some user defined  module functions"""
      print """ Make sure your typed 'source MetaPathwaysrc'"""
@@ -30,6 +31,7 @@ usage= sys.argv[0] +" -d dbname1 -b blastout_for_database1 -m map_for_database1 
 
 
 parser = None
+errorcode = 5
 
 def createParser():
     global parser
@@ -248,7 +250,11 @@ class BlastOutputParser(object):
         #print "trying to open blastoutput file " + blastoutput
         query_dictionary = {}
 
-        create_query_dictionary(self.blastoutput, query_dictionary, self.opts.algorithm, errorlogger =  errorlogger) 
+        try:
+          create_query_dictionary(self.blastoutput, query_dictionary, self.opts.algorithm, errorlogger =  errorlogger) 
+        except:
+          insert_error(5)
+
         try:
             self.blastoutputfile = open(self.blastoutput,'r')
         except:
@@ -259,6 +265,7 @@ class BlastOutputParser(object):
                self.error_and_warning_logger.write("ERROR : cannot open B/LAST output file %s %s to parse \n" +\
                                              "      : make sure \"B/LAST\"ing was done for "+\
                                              "the particular database" %(blastoutput) )
+            insert_error(5)
             exit_process( "Cannot open B/LAST output file " + blastoutput )
 
 

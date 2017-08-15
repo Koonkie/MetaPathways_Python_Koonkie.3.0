@@ -26,7 +26,7 @@ except:
      sys.exit(3)
 
 PATHDELIM = pathDelim()
-
+errorcode=1
 
 
 usage= sys.argv[0] + """ -i file.fna  --min_length N --log_file logfile.log """ +\
@@ -174,6 +174,8 @@ SIZE = 1000
 
 def main(argv, errorlogger = None, runstatslogger = None): 
     global parser
+    global errorcode
+
     (opts, args) = parser.parse_args(argv)
 
     if not valid_arguments(opts, args):
@@ -191,6 +193,10 @@ def main(argv, errorlogger = None, runstatslogger = None):
     else:
        mapfile = None
 
+    if opts.seqtype=='nucleotide':
+        errorcode = 1
+    else:
+        errorcode = 3
     
     sample_name = opts.input_fasta;
     sample_name = re.sub(r'^.*/','',sample_name, re.I)
@@ -369,10 +375,11 @@ def main(argv, errorlogger = None, runstatslogger = None):
 
 def MetaPathways_filter_input(argv, errorlogger = None, runstatslogger = None):
     createParser()
+    global errorcode
     try:
        main(argv, errorlogger = errorlogger, runstatslogger = runstatslogger) 
     except:
-       insert_error(1)
+       insert_error(errorcode)
        return (0,'')
 
     return (0,'')

@@ -17,6 +17,7 @@ try:
     import logging.handlers
     import re
     from glob import glob
+    from libs.python_modules.utils.errorcodes import *
     from libs.python_modules.utils.utils import *
     from libs.python_modules.utils.metapathways_utils import ShortenORFId,ShortentRNAId, ShortenrRNAId, ContigID
     from libs.python_modules.utils.sysutil import pathDelim, genbankDate, getstatusoutput
@@ -28,6 +29,7 @@ except:
     sys.exit(3)
 
 PATHDELIM = pathDelim()
+errorcode = 12
 
 def fprintf(file, fmt, *args):
     file.write(fmt % args)
@@ -846,7 +848,7 @@ def main(argv, errorlogger = None, runstatslogger = None):
     # filtering options
 
 
-    global parser
+    global parser, errorcode
     options, args = parser.parse_args(argv)
 
     if not(options.gff_file or options.nucleotide_sequences or options.protein_sequences or options.output):
@@ -861,7 +863,9 @@ def main(argv, errorlogger = None, runstatslogger = None):
 
     if not options.gbk_file and not options.ptinput_file:
        eprintf("ERROR:No genbank or ptools input is specified\n")
-       return (0,'')
+        
+       insert_error(errorcode)
+       return (1,'')
 
 
     if not path.exists(options.gff_file):
@@ -909,7 +913,11 @@ def main(argv, errorlogger = None, runstatslogger = None):
 
 def MetaPathways_create_genbank_ptinput_sequin(argv, errorlogger = None, runstatslogger = None):
     createParser()
-    main(argv, errorlogger = errorlogger, runstatslogger = runstatslogger)
+    global errorcode
+    try:
+       main(argv, errorlogger = errorlogger, runstatslogger = runstatslogger)
+    except:
+       insert_error(errorcode)
     return (0,'')
     
 if __name__ == '__main__':
