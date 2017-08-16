@@ -17,7 +17,18 @@ CFLAGS=-C
 #     this will get the files uploaded by koonkie into the path in METAPATHWAYS_DB and the ptools.tar.gz into the PTOOLS_DIR
 #
 
-OS_PLATFORM=linux
+
+## taken from so://714100/os-detecting-makefile
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	OS_PLATFORM = linux
+endif
+ifeq ($(UNAME_S),Darwin)
+	OS_PLATFORM = macosx
+endif
+
+
+
 #should be the same as the EXECUTABLES_DIR in the template_config.txt file
 
 NCBI_BLAST=ncbi-blast-2.6.0+-x64-linux.tar.gz
@@ -37,6 +48,15 @@ METAPATHWAYS_DB_DEFAULT=../fogdogdatabases
 PTOOLS_DIR=../
 METAPATHWAYS_DB_TAR=Metapathways_DBs_2016-04.tar.xz
 
+GIT_SUBMODULE_UPDATE=gitupdate
+
+all: $(GIT_SUBMODULE_UPDATE) $(BINARY_FOLDER) $(PRODIGAL)  $(FAST)  $(BWA) $(TRNASCAN)  $(RPKM) $(MICROBE_CENSUS) 
+
+## Alias for target 'all', for compliance with FogDog deliverables standard:
+install: all
+
+install-fogdog-dbs: $(METAPATHWAYS_DB)
+
 
 
 GIT_SUBMODULE_UPDATE=gitupdate
@@ -54,7 +74,6 @@ install-with-ptools: all METAPATHWAYS_DB_FETCH PTOOLS_FETCH PTOOLS_INSTALL
 PTOOLS_FETCH:  
 	@if [ -z $(PTOOLS_DIR) ]; then  echo "Variable PTOOLS_DIR not set. Set it as export PTOOLS_DIR=<path>" ;  exit 1; fi
 	@if [ ! -f ptools.tar.gz ]; then  aws s3 cp s3://fogdogdatabases/ptools.tar.gz  .; fi
-  
 
 .PHONY: PTOOLS_INSTALL
 PTOOLS_INSTALL:  ptools.tar.gz
@@ -73,6 +92,7 @@ METAPATHWAYS_DB_FETCH:
 	@if [ -z $(METAPATHWAYS_DB) ]; then  echo "Variable METAPATHWAYS_DB not set. Set it as export METPATHWAYS_DB=<path>" ;  exit 1; fi
 	@if [ ! -d $(METAPATHWAYS_DB) ]; then  echo "Fetching the database from S3 to $(METAPATHWAYS_DB)....";  mkdir $(METAPATHWAYS_DB); fi
 	@if [ ! -d $(METAPATHWAYS_DB)/functional ]; then  aws s3 sync s3://fogdogdatabases  $(METAPATHWAYS_DB)/; fi
+
 
 NOT_USED:
 	@if [ ! -d $(METAPATHWAYS_DB) ]; then \ 
@@ -147,11 +167,11 @@ $(MICROBE_CENSUS):
 
 $(METAPATHWAYS_DB_TAR):
 	@echo  "Fetching the databases...." 
-	aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/Metapathways_DBs_2016-04.tar.xz .
+	aws s3 cp s3://wbfogdog/a2ac7fc4db0bfae6c05ca12a5818792d/$(METAPATHWAYS_DB_TAR) .
 
 $(METAPATHWAYS_DB): $(METAPATHWAYS_DB_TAR)
 	@echo  "Unzipping the database...." 
-	tar -xvJf Metapathways_DBs_2016-04.tar.xz
+	tar -xvJf $(METAPATHWAYS_DB_TAR)
 
 
 
@@ -174,11 +194,11 @@ test: test-microbe-census test-mp-regression-tests
 
 
 clean:
-	$(MAKE) $(CFLAGS) executables/source/trnascan clean
-	$(MAKE) $(CFLAGS) executables/source/rpkm clean
-	$(MAKE) $(CFLAGS) executables/source/prodigal.v2_00 clean
-	$(MAKE) $(CFLAGS) executables/source/FAST clean
-	$(MAKE) $(CFLAGS) executables/source/bwa clean
+	$(MAKE) $(CFLAGS) executables/source/trnascan clean ||\
+		$(MAKE) $(CFLAGS) executables/source/rpkm clean ||\
+		$(MAKE) $(CFLAGS) executables/source/prodigal.v2_00 clean ||\
+		$(MAKE) $(CFLAGS) executables/source/FAST clean ||\
+		$(MAKE) $(CFLAGS) executables/source/bwa clean || true
 
 remove:
 	rm -rf  ../$(OS_PLATFORM)/trnascan-1.4 
